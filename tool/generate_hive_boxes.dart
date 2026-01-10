@@ -15,7 +15,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:hive_ce/hive.dart';
-import 'package:mushaf_reader/src/data/hive/hive_registrar.g.dart';
+import 'package:mushaf_reader/src/data/hive/hive_adapters.dart';
 import 'package:mushaf_reader/src/data/models/ayah_model.dart';
 import 'package:mushaf_reader/src/data/models/juz_model.dart';
 import 'package:mushaf_reader/src/data/models/page_layouts.dart';
@@ -26,6 +26,12 @@ import 'package:path/path.dart' as p;
 Future<void> main() async {
   final projectRoot = Directory.current.path;
   final quranJsonPath = p.join(projectRoot, 'assets', 'jsons', 'quran.json');
+  final quranFullJsonPath = p.join(
+    projectRoot,
+    'assets',
+    'jsons',
+    'quran_full.json',
+  );
   final hafsJsonPath = p.join(
     projectRoot,
     'assets',
@@ -45,11 +51,18 @@ Future<void> main() async {
   Hive.init(hiveOutputDir);
 
   // Register adapters
-  Hive.registerAdapters();
+  Hive
+    ..registerAdapter(JuzModelAdapter())
+    ..registerAdapter(AyahModelAdapter())
+    ..registerAdapter(PageLayoutsAdapter())
+    ..registerAdapter(SurahModelAdapter());
 
   print('Reading JSON files...');
   final quranJson =
       json.decode(File(quranJsonPath).readAsStringSync())
+          as Map<String, dynamic>;
+  final quranFullJson =
+      json.decode(File(quranFullJsonPath).readAsStringSync())
           as Map<String, dynamic>;
   final hafsJson =
       json.decode(File(hafsJsonPath).readAsStringSync()) as List<dynamic>;
@@ -59,13 +72,17 @@ Future<void> main() async {
   final juzsData = data['juzs'] as List<dynamic>;
   final basmalahData = data['basmalah'] as List<dynamic>;
 
+  // Extract pages from quran_full.json
+  final fullData = quranFullJson['data'] as Map<String, dynamic>;
+  final pagesData = fullData['pages'] as List<dynamic>;
+
   // Generate Surahs box
   print('Generating surahs.hive...');
   await _generateSurahsBox(surahsData);
 
-  // Generate Ayahs box
+  // Generate Ayahs box using quran_full.json for word-level glyph construction
   print('Generating ayahs.hive...');
-  await _generateAyahsBox(surahsData);
+  await _generateAyahsBox(surahsData, pagesData);
 
   // Generate Juzs box
   print('Generating juzs.hive...');
@@ -98,8 +115,49 @@ String codePointToChar(String code) {
   return String.fromCharCode(int.parse(hex, radix: 16));
 }
 
-Future<void> _generateAyahsBox(List<dynamic> surahsData) async {
+/// Strips HTML tags from a word (e.g., <span class="marker">ﭕ</span> -> ﭕ)
+String _stripHtml(String word) {
+  // Remove <span...> and </span> tags
+  return word.replaceAll(RegExp(r'<span[^>]*>'), '').replaceAll('</span>', '');
+}
+
+/// Builds glyph text from words array, replacing <br> with newlines.
+String _buildGlyphFromWords(List<dynamic> words) {
+  final buffer = StringBuffer();
+  for (final word in words) {
+    final w = word as String;
+    if (w.isEmpty) continue;
+    if (w == '<br>') {
+      buffer.write('\n');
+    } else {
+      buffer.write(_stripHtml(w));
+    }
+  }
+  return buffer.toString();
+}
+
+Future<void> _generateAyahsBox(
+  List<dynamic> surahsData,
+  List<dynamic> pagesData,
+) async {
   final box = await Hive.openBox<AyahModel>('ayahs');
+
+  // Build a map of ayah ID -> glyph text from quran_full.json
+  final ayahGlyphs = <int, String>{};
+  for (final page in pagesData) {
+    final ayas = page['ayas'] as List<dynamic>;
+    for (final aya in ayas) {
+      final id = aya['id'] as int;
+      // Skip special entries (surah name, basmalah, negative IDs)
+      if (id < 1) continue;
+      if (aya['isSurahName'] == true) continue;
+      if (aya['isBasmala'] == true) continue;
+
+      final words = aya['words'] as List<dynamic>;
+      final glyph = _buildGlyphFromWords(words);
+      ayahGlyphs[id] = glyph;
+    }
+  }
 
   var count = 0;
   for (final s in surahsData) {
@@ -108,7 +166,12 @@ Future<void> _generateAyahsBox(List<dynamic> surahsData) async {
 
     for (final a in ayahs) {
       final ayahId = a['number'] as int;
-      final codeV4 = a['code_v4'] as String? ?? '';
+      // Use glyph from quran_full.json, fallback to code_v4/glyph from quran.json
+      final glyph =
+          ayahGlyphs[ayahId] ??
+          a['glyph'] as String? ??
+          a['code_v4'] as String? ??
+          '';
 
       final ayah = AyahModel(
         id: ayahId,
@@ -116,7 +179,7 @@ Future<void> _generateAyahsBox(List<dynamic> surahsData) async {
         page: a['page'] as int,
         surah: surahNumber,
         numberInSurah: a['numberInSurah'] as int,
-        text: codeV4,
+        text: glyph,
       );
 
       await box.put(ayahId, ayah);
@@ -212,7 +275,8 @@ Future<void> _generateSurahsBox(List<dynamic> surahsData) async {
     final glyph = codeV4 != null ? codePointToChar(codeV4) : '';
 
     // hasBasmallah (note: JSON has typo "hasBasmallah")
-    final hasBasmalah = s['hasBasmallah'] as bool? ?? (surahNumber != 9);
+    final hasBasmalah =
+        s['hasBasmallah'] as bool? ?? (surahNumber != 9 || surahNumber != 1);
 
     final surah = SurahModel(
       number: surahNumber,

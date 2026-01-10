@@ -1,5 +1,28 @@
 import 'package:flutter/material.dart';
 
+/// A function that modifies a [TextStyle] and returns a new [TextStyle].
+///
+/// Used to customize default styles by applying modifications on top of them.
+/// This is the easiest way to customize styles while preserving defaults.
+///
+/// ## Example
+///
+/// ```dart
+/// // Simple color change
+/// StyleModifier colorModifier = (style) => style.copyWith(color: Colors.brown);
+///
+/// // Multiple modifications
+/// StyleModifier multiModifier = (style) => style.copyWith(
+///   color: Colors.green,
+///   fontWeight: FontWeight.bold,
+///   shadows: [Shadow(color: Colors.black26, blurRadius: 2)],
+/// );
+/// ```
+///
+/// See also:
+/// - [MushafStyle], which uses this for style customization
+typedef StyleModifier = TextStyle Function(TextStyle defaultStyle);
+
 /// Scaling configuration for the Mushaf reader.
 ///
 /// Controls how text and elements scale based on available screen space.
@@ -101,7 +124,23 @@ class MushafScale {
 /// Styling options for customizing the Mushaf reader appearance.
 ///
 /// This class provides configuration options for visual aspects of
-/// the Mushaf display, including Ayah highlighting, scaling, and colors.
+/// the Mushaf display, including text styles, scaling, and colors.
+///
+/// ## Text Style Customization
+///
+/// You can customize the appearance of various text elements while the
+/// library ensures correct font rendering. The following properties are
+/// preserved from your [TextStyle]:
+///
+/// - `color`, `backgroundColor`
+/// - `fontWeight`, `fontStyle`
+/// - `letterSpacing`, `wordSpacing`
+/// - `height` (line height)
+/// - `decoration`, `decorationColor`, `decorationStyle`, `decorationThickness`
+/// - `shadows`, `fontFeatures`, `fontVariations`
+///
+/// **Note:** The `fontFamily` and `package` properties are always overridden
+/// to ensure correct QCF4 font rendering.
 ///
 /// ## Example
 ///
@@ -109,20 +148,20 @@ class MushafScale {
 /// MushafPage(
 ///   page: 1,
 ///   style: MushafStyle(
-///     highlightColor: Colors.amber.withOpacity(0.3),
-///     backgroundColor: Colors.cream,
+///     // Custom text colors
+///     ayahStyle: TextStyle(color: Color(0xFF1B4332)),
+///     activeAyahStyle: TextStyle(
+///       color: Colors.white,
+///       backgroundColor: Color(0xFF2D6A4F),
+///     ),
+///     basmalahStyle: TextStyle(color: Color(0xFF40916C)),
+///     surahNameStyle: TextStyle(color: Color(0xFF52B788)),
+///     juzStyle: TextStyle(color: Color(0xFF74C69D)),
+///     pageNumberStyle: TextStyle(color: Color(0xFF95D5B2)),
+///
+///     // Background and scaling
+///     backgroundColor: Color(0xFFFFFBF0),
 ///     scale: MushafScale(minScale: 0.7, maxScale: 1.5),
-///   ),
-/// )
-/// ```
-///
-/// ## Responsive Scaling
-///
-/// ```dart
-/// MushafStyle(
-///   scale: MushafScale(
-///     minScale: 0.6,  // Readable on small phones
-///     maxScale: 1.2,  // Not too large on tablets
 ///   ),
 /// )
 /// ```
@@ -132,15 +171,87 @@ class MushafScale {
 /// - [MushafScale], for detailed scaling control
 /// - [MushafPageController], for controlling Ayah selection
 class MushafStyle {
+  /// The text style applied to Ayah text content.
+  ///
+  /// Customize color, weight, decoration, etc. The `fontFamily` and `package`
+  /// are always overridden with the appropriate page-specific QCF4 font.
+  ///
+  /// If null, default styling is used (black text, 1.6 line height).
+  final TextStyle? ayahStyle;
+
   /// The text style applied to the currently selected/highlighted Ayah.
   ///
   /// When an Ayah is selected (via tap or programmatically), this style
   /// is applied to distinguish it from other Ayahs. If null, the default
   /// style with [highlightColor] as background is used.
   ///
-  /// Note: The [TextStyle.fontFamily] will be overridden with the
+  /// The `fontFamily` and `package` are always overridden with the
   /// appropriate page-specific QCF4 font.
   final TextStyle? activeAyahStyle;
+
+  /// The text style applied to Basmalah (Bismillah) text.
+  ///
+  /// Uses the shared QCF4_BSML font. Customize color, weight, etc.
+  /// The `fontFamily` and `package` are always overridden.
+  final TextStyle? basmalahStyle;
+
+  /// The text style applied to Surah name text in headers.
+  ///
+  /// Uses the shared QCF4_BSML font. Customize color, weight, etc.
+  /// The `fontFamily` and `package` are always overridden.
+  final TextStyle? surahNameStyle;
+
+  /// The text style applied to Juz number indicators.
+  ///
+  /// Uses the shared QCF4_BSML font. Customize color, weight, etc.
+  /// The `fontFamily` and `package` are always overridden.
+  final TextStyle? juzStyle;
+
+  /// The text style applied to page numbers.
+  ///
+  /// Customize color, weight, decoration, etc.
+  /// Note: Page numbers use standard numerals, not QCF4 fonts.
+  final TextStyle? pageNumberStyle;
+
+  /// A function to modify the default Ayah text style.
+  ///
+  /// Receives the resolved style (from [ayahStyle] or library default) and
+  /// returns a modified style. Use this for easy customization:
+  ///
+  /// ```dart
+  /// MushafStyle(
+  ///   ayahStyleModifier: (style) => style.copyWith(color: Colors.brown),
+  /// )
+  /// ```
+  ///
+  /// If both [ayahStyle] and [ayahStyleModifier] are provided, the modifier
+  /// receives the merged result of [ayahStyle] and can further customize it.
+  final StyleModifier? ayahStyleModifier;
+
+  /// A function to modify the default active/highlighted Ayah style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? activeAyahStyleModifier;
+
+  /// A function to modify the default Basmalah text style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? basmalahStyleModifier;
+
+  /// A function to modify the default Surah name text style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? surahNameStyleModifier;
+
+  /// A function to modify the default Juz indicator text style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? juzStyleModifier;
+
+  /// A function to modify the default page number text style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? pageNumberStyleModifier;
 
   /// The background color for highlighted/selected Ayahs.
   ///
@@ -165,23 +276,63 @@ class MushafStyle {
   /// All parameters are optional with sensible defaults:
   /// - [highlightColor] defaults to a semi-transparent amber
   /// - [scale] defaults to auto-scaling with min 0.5, max 2.0
-  /// - [activeAyahStyle] and [backgroundColor] default to null
+  /// - All style parameters default to null (uses library defaults)
   const MushafStyle({
+    this.ayahStyle,
+    this.ayahStyleModifier,
     this.activeAyahStyle,
+    this.activeAyahStyleModifier,
+    this.basmalahStyle,
+    this.basmalahStyleModifier,
+    this.surahNameStyle,
+    this.surahNameStyleModifier,
+    this.juzStyle,
+    this.juzStyleModifier,
+    this.pageNumberStyle,
+    this.pageNumberStyleModifier,
     this.highlightColor = const Color.fromARGB(202, 245, 205, 110),
     this.backgroundColor,
     this.scale = const MushafScale(),
   });
 
   /// Creates a copy of this style with the given fields replaced.
+  ///
+  /// Note: Style objects are passed through as-is. The `fontFamily` and
+  /// `package` enforcement happens at render time via [MushafTextStyleMerger].
   MushafStyle copyWith({
+    TextStyle? ayahStyle,
+    StyleModifier? ayahStyleModifier,
     TextStyle? activeAyahStyle,
+    StyleModifier? activeAyahStyleModifier,
+    TextStyle? basmalahStyle,
+    StyleModifier? basmalahStyleModifier,
+    TextStyle? surahNameStyle,
+    StyleModifier? surahNameStyleModifier,
+    TextStyle? juzStyle,
+    StyleModifier? juzStyleModifier,
+    TextStyle? pageNumberStyle,
+    StyleModifier? pageNumberStyleModifier,
     Color? highlightColor,
     Color? backgroundColor,
     MushafScale? scale,
   }) {
     return MushafStyle(
+      ayahStyle: ayahStyle ?? this.ayahStyle,
+      ayahStyleModifier: ayahStyleModifier ?? this.ayahStyleModifier,
       activeAyahStyle: activeAyahStyle ?? this.activeAyahStyle,
+      activeAyahStyleModifier:
+          activeAyahStyleModifier ?? this.activeAyahStyleModifier,
+      basmalahStyle: basmalahStyle ?? this.basmalahStyle,
+      basmalahStyleModifier:
+          basmalahStyleModifier ?? this.basmalahStyleModifier,
+      surahNameStyle: surahNameStyle ?? this.surahNameStyle,
+      surahNameStyleModifier:
+          surahNameStyleModifier ?? this.surahNameStyleModifier,
+      juzStyle: juzStyle ?? this.juzStyle,
+      juzStyleModifier: juzStyleModifier ?? this.juzStyleModifier,
+      pageNumberStyle: pageNumberStyle ?? this.pageNumberStyle,
+      pageNumberStyleModifier:
+          pageNumberStyleModifier ?? this.pageNumberStyleModifier,
       highlightColor: highlightColor ?? this.highlightColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       scale: scale ?? this.scale,

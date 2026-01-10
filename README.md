@@ -29,21 +29,55 @@ dependencies:
 
 ## Setup
 
-### 1. Initialize the Controller
+### 1. Initialize the Library
 
-Call once at app startup (e.g., in `main()` before `runApp`):
+Call once at app startup in `main()` before `runApp`:
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MushafController.init();
+  await MushafReaderLibrary.ensureInitialized();
   runApp(MyApp());
 }
 ```
 
-### 2. Display a Page
+### 2. Use the Reader Widget
+
+```dart
+class QuranScreen extends StatefulWidget {
+  @override
+  State<QuranScreen> createState() => _QuranScreenState();
+}
+
+class _QuranScreenState extends State<QuranScreen> {
+  late final MushafReaderController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MushafReaderController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MushafReader(
+      controller: _controller,
+      onAyahTap: (info) => print('Tapped ${info.reference}'),
+    );
+  }
+}
+```
+
+### 3. Display a Single Page
 
 ```dart
 MushafPage(
@@ -55,10 +89,12 @@ MushafPage(
 )
 ```
 
-### 3. Fetch Individual Ayahs
+### 4. Fetch Individual Ayahs
 
 ```dart
-final ayah = await MushafController.instance.getAyah(ayahId);
+final controller = MushafReaderController();
+
+final ayah = await controller.getAyah(ayahId);
 print('Surah ${ayah.surah}, Ayah ${ayah.numberInSurah}');
 print('Text: ${ayah.text}');
 ```

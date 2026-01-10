@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
 import 'package:mushaf_reader/src/core/extensions.dart';
-import 'package:mushaf_reader/src/core/fonts.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 import 'package:mushaf_reader/src/presentation/widgets/page_ayah_widget.dart';
@@ -242,7 +241,12 @@ class _MushafPageState extends State<MushafPage>
   }
 
   /// Builds the page header with Surah name and Juz indicator.
-  Widget _buildHeader(QuranPageModel data, double width, double fontSize) {
+  Widget _buildHeader(
+    QuranPageModel data,
+    double width,
+    double fontSize,
+    MushafStyle style,
+  ) {
     return SizedBox(
       width: width,
       child: Row(
@@ -252,12 +256,14 @@ class _MushafPageState extends State<MushafPage>
             SurahNameWidget(
               surahData: data.surahs.first.toSurahModel(),
               fontSize: fontSize,
+              textStyle: style.surahNameStyle,
               onTap: widget.onTapSurahName,
               onLongPress: widget.onLongPressSurahName,
             ),
           JuzWidget(
             number: data.juzNumber,
             fontSize: fontSize + 20,
+            textStyle: style.juzStyle,
             onTap: widget.onTapJuz,
             onLongPress: widget.onLongPressJuz,
           ),
@@ -297,15 +303,28 @@ class _MushafPageState extends State<MushafPage>
         final basmalahFontSize = scaleConfig.getBasmalahFontSize(scale);
         final pageNumberFontSize = scaleConfig.getPageNumberFontSize(scale);
 
+        // Use MushafTextStyleMerger to properly merge user styles with enforced font settings
+        final defaultAyahStyle = MushafTextStyleMerger.mergeAyahStyle(
+          userStyle: style.ayahStyle,
+          modifier: style.ayahStyleModifier,
+          pageNumber: widget.page,
+          baseSize: ayahFontSize,
+          scaleFactor: 1.0, // Already scaled via scaleConfig
+        );
+
         final activeStyle =
-            style.activeAyahStyle?.copyWith(
-              fontFamily: fontFamily,
-              fontSize: (style.activeAyahStyle!.fontSize ?? 28) * scale,
-            ) ??
-            MushafFonts.pageStyle(
-              fontFamily,
-              fontSize: ayahFontSize,
-            ).copyWith(backgroundColor: style.highlightColor);
+            style.activeAyahStyle != null ||
+                style.activeAyahStyleModifier != null
+            ? MushafTextStyleMerger.mergeAyahStyle(
+                userStyle: style.activeAyahStyle,
+                modifier: style.activeAyahStyleModifier,
+                pageNumber: widget.page,
+                baseSize: style.activeAyahStyle?.fontSize ?? ayahFontSize,
+                scaleFactor: style.activeAyahStyle?.fontSize != null
+                    ? scale
+                    : 1.0,
+              )
+            : defaultAyahStyle.copyWith(backgroundColor: style.highlightColor);
 
         return Center(
           child: SizedBox(
@@ -314,20 +333,22 @@ class _MushafPageState extends State<MushafPage>
             child: Column(
               children: [
                 if (widget.hideHeader != true)
-                  _buildHeader(data, contentWidth, basmalahFontSize),
+                  _buildHeader(data, contentWidth, basmalahFontSize, style),
                 const Spacer(),
                 ..._buildSurahBlocks(
                   data,
                   contentWidth,
                   scale,
                   fontFamily,
+                  defaultAyahStyle,
                   activeStyle,
-                  ayahFontSize,
+                  style,
                   basmalahFontSize,
                 ),
                 PageNumberWidget(
                   page: widget.page,
                   fontSize: pageNumberFontSize,
+                  textStyle: style.pageNumberStyle,
                 ),
               ],
             ),
@@ -343,23 +364,30 @@ class _MushafPageState extends State<MushafPage>
     double width,
     double scale,
     String fontFamily,
+    TextStyle defaultAyahStyle,
     TextStyle activeStyle,
-    double ayahFontSize,
+    MushafStyle mushafStyle,
     double basmalahFontSize,
   ) {
     return data.surahs.expand(
       (block) => [
+        // Show header when this block starts a new surah (first ayah is verse 1)
         if (block.hasBasmalah) ...[
           SurahHeaderWidget(
             surahData: block.toSurahModel(),
             width: width,
             fontSize: basmalahFontSize,
+            textStyle: mushafStyle.surahNameStyle,
             onTap: widget.onTapSurahHeader,
             onLongPress: widget.onLongPressSurahHeader,
           ),
           SizedBox(height: 8 * scale),
+          // Show basmalah for all surahs except Al-Fatiha (1) and At-Tawbah (9)
           if (block.surahNumber != 9 && block.surahNumber != 1)
-            BasmalahWidget(fontSize: basmalahFontSize),
+            BasmalahWidget(
+              fontSize: basmalahFontSize,
+              textStyle: mushafStyle.basmalahStyle,
+            ),
         ],
         PageAyahWidget(
           fullText: data.glyphText,
@@ -367,7 +395,7 @@ class _MushafPageState extends State<MushafPage>
           activeStyle: activeStyle,
           selectedAyahId: _controller?.selectedAyahId ?? _selectedAyahId,
           ayahs: block.ayahs,
-          style: MushafFonts.pageStyle(fontFamily, fontSize: ayahFontSize),
+          style: defaultAyahStyle,
           onAyahSelection: (ayahId) {
             final currentSelection =
                 _controller?.selectedAyahId ?? _selectedAyahId;

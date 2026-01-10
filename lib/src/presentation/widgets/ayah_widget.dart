@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
-import 'package:mushaf_reader/src/core/fonts.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 
 /// A widget that displays a single Ayah (verse) with the correct QCF4 font.
@@ -79,6 +78,17 @@ class AyahWidget extends StatefulWidget {
   /// are preserved.
   final TextStyle? style;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// AyahWidget.fromId(
+  ///   ayahId: 1,
+  ///   styleModifier: (style) => style.copyWith(color: Colors.brown),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// Widget to display while loading the Ayah data.
   ///
   /// Defaults to a centered [CircularProgressIndicator].
@@ -113,6 +123,7 @@ class AyahWidget extends StatefulWidget {
     required int ayahId,
     this.fontSize,
     this.style,
+    this.styleModifier,
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
@@ -140,6 +151,7 @@ class AyahWidget extends StatefulWidget {
     required int ayah,
     this.fontSize,
     this.style,
+    this.styleModifier,
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
@@ -169,20 +181,23 @@ class _AyahWidgetState extends State<AyahWidget> {
         }
 
         final ayah = snapshot.data!;
-        final fontFamily = MushafFonts.forPage(ayah.page);
         final effectiveFontSize =
-            widget.fontSize ?? widget.style?.fontSize ?? 28.0;
+            widget.fontSize ??
+            widget.style?.fontSize ??
+            MushafBaseFontSizes.ayah;
+
+        final effectiveStyle = MushafTextStyleMerger.mergeAyahStyle(
+          userStyle: widget.style,
+          modifier: widget.styleModifier,
+          pageNumber: ayah.page,
+          baseSize: effectiveFontSize,
+          scaleFactor: 1.0,
+        );
 
         return Text(
           ayah.codeV4,
           textAlign: TextAlign.right,
-          style:
-              widget.style?.copyWith(
-                fontFamily: fontFamily,
-                package: packageName,
-                fontSize: effectiveFontSize,
-              ) ??
-              MushafFonts.pageStyle(fontFamily, fontSize: effectiveFontSize),
+          style: effectiveStyle,
         );
       },
     );

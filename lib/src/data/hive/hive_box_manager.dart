@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_ce_flutter/adapters.dart';
-import 'package:mushaf_reader/src/data/hive/hive_registrar.g.dart';
+import 'package:mushaf_reader/src/data/hive/hive_adapters.dart';
+// import 'package:mushaf_reader/src/data/hive/hive_registrar.g.dart';
 import 'package:mushaf_reader/src/data/models/ayah_model.dart';
 import 'package:mushaf_reader/src/data/models/juz_model.dart';
 import 'package:mushaf_reader/src/data/models/page_layouts.dart';
@@ -140,7 +141,11 @@ class HiveBoxManager {
     Hive.init(_hivePath);
 
     // Register all adapters
-    Hive.registerAdapters();
+    Hive
+      ..registerAdapter(JuzModelAdapter())
+      ..registerAdapter(AyahModelAdapter())
+      ..registerAdapter(PageLayoutsAdapter())
+      ..registerAdapter(SurahModelAdapter());
 
     // Copy pre-populated boxes from assets if needed
     await _copyBoxesFromAssets();

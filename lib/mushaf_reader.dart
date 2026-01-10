@@ -10,28 +10,23 @@
 ///
 /// ## Getting Started
 ///
-/// Initialize the [MushafReaderController] before using widgets:
+/// Initialize the library once in your `main()` function before `runApp()`:
 ///
 /// ```dart
-/// class _MyAppState extends State<MyApp> {
-///   final _controller = MushafReaderController();
+/// void main() async {
+///   WidgetsFlutterBinding.ensureInitialized();
+///   await MushafReaderLibrary.ensureInitialized();
+///   runApp(MyApp());
+/// }
+/// ```
 ///
-///   @override
-///   void initState() {
-///     super.initState();
-///     _controller.init();
-///   }
+/// Then use the reader in your widgets:
 ///
-///   @override
-///   void dispose() {
-///     _controller.dispose();
-///     super.dispose();
-///   }
-///
+/// ```dart
+/// class MyQuranScreen extends StatelessWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return MushafReader(
-///       controller: _controller,
 ///       onAyahTap: (info) => print('Tapped: ${info.reference}'),
 ///     );
 ///   }
@@ -79,6 +74,11 @@
 /// accurate glyph positioning and rendering that matches the printed Mushaf.
 library;
 
+import 'package:mushaf_reader/src/data/hive/hive_box_manager.dart';
+
+// Core utilities
+export 'src/core/fonts.dart'
+    show MushafFonts, MushafBaseFontSizes, MushafTextStyleMerger;
 // Core models
 export 'src/data/models/ayah_info.dart';
 export 'src/data/models/ayah_model.dart';
@@ -99,3 +99,55 @@ export 'src/presentation/widgets/juz_widget.dart';
 export 'src/presentation/widgets/page_number_widget.dart';
 export 'src/presentation/widgets/surah_header_widget.dart';
 export 'src/presentation/widgets/surah_name_widget.dart';
+
+/// Global initialization for the Mushaf Reader library.
+///
+/// This class provides static methods for initializing the library's
+/// data layer (Hive database) before using any reader widgets.
+///
+/// ## Usage
+///
+/// Call [ensureInitialized] once in your `main()` function:
+///
+/// ```dart
+/// void main() async {
+///   WidgetsFlutterBinding.ensureInitialized();
+///   await MushafReaderLibrary.ensureInitialized();
+///   runApp(MyApp());
+/// }
+/// ```
+abstract final class MushafReaderLibrary {
+  static bool _initialized = false;
+
+  /// Returns `true` if the library has been initialized.
+  ///
+  /// Check this before using [MushafReaderController] if you're unsure
+  /// whether initialization has completed.
+  static bool get isInitialized => _initialized;
+
+  /// Initializes the Mushaf Reader library.
+  ///
+  /// This method must be called once before using any Mushaf widgets or
+  /// the [MushafReaderController]. It initializes the Hive database,
+  /// registers type adapters, and copies pre-populated data from assets.
+  ///
+  /// This method is idempotent - subsequent calls return immediately.
+  ///
+  /// ```dart
+  /// void main() async {
+  ///   WidgetsFlutterBinding.ensureInitialized();
+  ///   await MushafReaderLibrary.ensureInitialized();
+  ///   runApp(MyApp());
+  /// }
+  /// ```
+  ///
+  /// Throws if database initialization fails (e.g., missing assets).
+  static Future<void> ensureInitialized() async {
+    if (_initialized) return;
+
+    final boxManager = HiveBoxManager();
+    await boxManager.init();
+
+    _initialized = true;
+  }
+}

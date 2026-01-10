@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/src/core/fonts.dart';
+import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
+    show StyleModifier;
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 
 /// A widget that displays the Basmalah (بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ).
@@ -53,6 +55,16 @@ class BasmalahWidget extends StatelessWidget {
   /// Other properties like [fontSize] and [color] are preserved.
   final TextStyle? textStyle;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// BasmalahWidget(
+  ///   styleModifier: (style) => style.copyWith(color: Colors.brown),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// The pre-loaded Basmalah glyph.
   ///
   /// If provided, this is used directly. Otherwise, the widget loads
@@ -63,7 +75,13 @@ class BasmalahWidget extends StatelessWidget {
   ///
   /// [fontSize] and [textStyle] optionally customize the text appearance.
   /// [glyph] can be provided if you have pre-loaded the basmalah glyph.
-  const BasmalahWidget({super.key, this.fontSize, this.textStyle, this.glyph});
+  const BasmalahWidget({
+    super.key,
+    this.fontSize,
+    this.textStyle,
+    this.styleModifier,
+    this.glyph,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -91,13 +109,12 @@ class BasmalahWidget extends StatelessWidget {
   }
 
   Widget _buildText(String glyphText) {
-    final effectiveStyle =
-        textStyle?.copyWith(
-          fontFamily: MushafFonts.basmalahFamily,
-          package: packageName,
-          fontSize: fontSize ?? textStyle?.fontSize,
-        ) ??
-        MushafFonts.basmalahStyle(fontSize: fontSize ?? 21.0);
+    final effectiveStyle = MushafTextStyleMerger.mergeBasmalahStyle(
+      userStyle: textStyle,
+      modifier: styleModifier,
+      baseSize: fontSize ?? textStyle?.fontSize ?? MushafBaseFontSizes.basmalah,
+      scaleFactor: 1.0,
+    );
 
     return Text(
       glyphText,

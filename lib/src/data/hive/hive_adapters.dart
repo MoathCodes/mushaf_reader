@@ -9,5 +9,5 @@ import 'package:mushaf_reader/src/data/models/surah_model.dart';
   AdapterSpec<PageLayouts>(),
   AdapterSpec<JuzModel>(),
   AdapterSpec<SurahModel>(),
-])
+], firstTypeId: 100)
 part 'hive_adapters.g.dart';

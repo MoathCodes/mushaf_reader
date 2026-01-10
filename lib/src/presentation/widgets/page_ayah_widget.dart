@@ -131,6 +131,7 @@ class _PageAyahWidgetState extends State<PageAyahWidget> {
       child: RichText(
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.center,
+        locale: const Locale('ar'),
         text: TextSpan(children: _cachedSpans!),
       ),
     );

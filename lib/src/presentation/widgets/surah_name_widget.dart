@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/src/core/fonts.dart';
+import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
+    show StyleModifier;
 import 'package:mushaf_reader/src/data/models/surah_model.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 
@@ -58,6 +60,17 @@ class SurahNameWidget extends StatelessWidget {
   /// [MushafFonts.basmalahFamily] regardless of the provided value.
   final TextStyle? textStyle;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// SurahNameWidget(
+  ///   surahData: surah,
+  ///   styleModifier: (style) => style.copyWith(color: Colors.green),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// Callback triggered when the surah name widget is tapped.
   final void Function(int surahNumber)? onTap;
 
@@ -70,6 +83,7 @@ class SurahNameWidget extends StatelessWidget {
     required SurahModel surahData,
     this.fontSize,
     this.textStyle,
+    this.styleModifier,
     this.onTap,
     this.onLongPress,
   }) : _surahData = surahData,
@@ -83,6 +97,7 @@ class SurahNameWidget extends StatelessWidget {
     super.key,
     this.fontSize,
     this.textStyle,
+    this.styleModifier,
     this.onTap,
     this.onLongPress,
   }) : _surahData = null,
@@ -110,13 +125,12 @@ class SurahNameWidget extends StatelessWidget {
   }
 
   Widget _buildContent(SurahModel surahData) {
-    final effectiveStyle =
-        textStyle?.copyWith(
-          fontFamily: MushafFonts.basmalahFamily,
-          package: packageName,
-          fontSize: fontSize ?? textStyle?.fontSize,
-        ) ??
-        MushafFonts.basmalahStyle(fontSize: fontSize ?? 21.0);
+    final effectiveStyle = MushafTextStyleMerger.mergeBasmalahStyle(
+      userStyle: textStyle,
+      modifier: styleModifier,
+      baseSize: fontSize ?? textStyle?.fontSize ?? MushafBaseFontSizes.basmalah,
+      scaleFactor: 1.0,
+    );
 
     if (onTap != null || onLongPress != null) {
       return GestureDetector(

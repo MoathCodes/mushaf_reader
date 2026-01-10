@@ -34,7 +34,6 @@ import 'package:mushaf_reader/src/presentation/screens/mushaf_page.dart';
 ///   void initState() {
 ///     super.initState();
 ///     _controller = MushafReaderController(initialPage: 1);
-///     _controller.init();
 ///   }
 ///
 ///   @override
@@ -181,6 +180,21 @@ class _MushafReaderState extends State<MushafReader> {
       physics: widget.physics,
       itemCount: 604,
       onPageChanged: _onPageChanged,
+      // children: List.generate(
+      //   604,
+      //   (index) => MushafPage(
+      //     page: index + 1,
+      //     style: widget.style,
+      //     loadingWidget: widget.pageLoadingWidget,
+      //     hideHeader: widget.hideHeader,
+      //     onTapAyah: widget.onAyahTap != null
+      //         ? (ayahId) => _handleAyahTap(ayahId)
+      //         : null,
+      //     onLongPressAyah: widget.onAyahLongPress != null
+      //         ? (ayahId) => _handleAyahLongPress(ayahId)
+      //         : null,
+      //   ),
+      // ),
       itemBuilder: (context, index) {
         final page = index + 1;
         return MushafPage(
@@ -235,9 +249,6 @@ class _MushafReaderState extends State<MushafReader> {
   }
 
   Future<void> _initController() async {
-    if (!_controller.isInitialized) {
-      await _controller.init();
-    }
     if (mounted) {
       setState(() {
         _isInitialized = true;

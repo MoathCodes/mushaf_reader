@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mushaf_reader/src/data/models/ayah_info.dart';
-import 'package:mushaf_reader/src/data/models/ayah_model.dart';
-import 'package:mushaf_reader/src/data/models/juz_model.dart';
-import 'package:mushaf_reader/src/data/models/mushaf_page_info.dart';
-import 'package:mushaf_reader/src/data/models/quran_page_model.dart';
-import 'package:mushaf_reader/src/data/models/surah_model.dart';
+import 'package:mushaf_reader/mushaf_reader.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 
@@ -144,14 +139,44 @@ class MushafReaderController extends ChangeNotifier {
   /// [initialPage] - The page to start on (1-604). Defaults to 1.
   ///
   /// [repository] - Optional custom repository for testing.
-  MushafReaderController({
-    PageController? pageController,
-    this.initialPage = 1,
-    IQuranRepository? repository,
-  }) : _pageController = pageController,
-       _ownsPageController = pageController == null,
-       _repo = repository ?? HiveQuranRepository(),
-       _currentPage = initialPage;
+  MushafReaderController({PageController? pageController, this.initialPage = 1})
+    : _pageController = pageController,
+      _ownsPageController = pageController == null,
+      _repo = HiveQuranRepository(),
+      _currentPage = initialPage {
+    if (_isInitialized) return;
+
+    // Ensure the library was initialized
+    if (!MushafReaderLibrary.isInitialized) {
+      throw StateError(
+        'MushafReaderLibrary.ensureInitialized() must be called before using '
+        'MushafReaderController. Add it to your main() function:\n\n'
+        'void main() async {\n'
+        '  WidgetsFlutterBinding.ensureInitialized();\n'
+        '  await MushafReaderLibrary.ensureInitialized();\n'
+        '  runApp(MyApp());\n'
+        '}',
+      );
+    }
+    // Pre-cache basmalah
+    _repo.getBasmalah().then((value) => _cachedBasmalah = value);
+
+    // Pre-cache all juzs
+    _repo.getJuzs().then(
+      (value) => _juzCache = {for (var j in value) j.number: j},
+    );
+
+    // Pre-cache all surahs
+    _repo.getAllSurahs().then((value) => _surahCache = value);
+
+    // Load initial page info
+    getPageInfo(_currentPage).then((value) {
+      _currentPageInfo = value;
+    });
+
+    _isInitialized = true;
+    notifyListeners();
+  }
 
   // ============================================================
   // Getters
@@ -333,32 +358,47 @@ class MushafReaderController extends ChangeNotifier {
   /// Initializes the controller.
   ///
   /// This must be called before using most methods. It:
-  /// - Initializes the database connection
   /// - Pre-caches essential data (surahs, juzs, basmalah)
   /// - Loads the initial page info
   ///
+  /// **Important**: You must call `MushafReaderLibrary.ensureInitialized()` in your
+  /// `main()` function before using this controller.
+  ///
   /// This method is idempotent - subsequent calls return immediately.
-  Future<void> init() async {
-    if (_isInitialized) return;
+  ///
+  /// Throws [StateError] if `MushafReaderLibrary.ensureInitialized()` was not called.
+  // Future<void> init() async {
+  //   if (_isInitialized) return;
 
-    await _repo.ensureReady();
+  //   // Ensure the library was initialized
+  //   if (!MushafReaderLibrary.isInitialized) {
+  //     throw StateError(
+  //       'MushafReaderLibrary.ensureInitialized() must be called before using '
+  //       'MushafReaderController. Add it to your main() function:\n\n'
+  //       'void main() async {\n'
+  //       '  WidgetsFlutterBinding.ensureInitialized();\n'
+  //       '  await MushafReaderLibrary.ensureInitialized();\n'
+  //       '  runApp(MyApp());\n'
+  //       '}',
+  //     );
+  //   }
 
-    // Pre-cache basmalah
-    _cachedBasmalah = await _repo.getBasmalah();
+  //   // Pre-cache basmalah
+  //   _cachedBasmalah = await _repo.getBasmalah();
 
-    // Pre-cache all juzs
-    final juzs = await _repo.getJuzs();
-    _juzCache = {for (var j in juzs) j.number: j};
+  //   // Pre-cache all juzs
+  //   final juzs = await _repo.getJuzs();
+  //   _juzCache = {for (var j in juzs) j.number: j};
 
-    // Pre-cache all surahs
-    _surahCache = await _repo.getAllSurahs();
+  //   // Pre-cache all surahs
+  //   _surahCache = await _repo.getAllSurahs();
 
-    // Load initial page info
-    _currentPageInfo = await getPageInfo(_currentPage);
+  //   // Load initial page info
+  //   _currentPageInfo = await getPageInfo(_currentPage);
 
-    _isInitialized = true;
-    notifyListeners();
-  }
+  //   _isInitialized = true;
+  //   notifyListeners();
+  // }
 
   /// Jumps to the page containing a specific Ayah.
   ///

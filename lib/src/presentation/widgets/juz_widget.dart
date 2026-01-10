@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/src/core/fonts.dart';
 import 'package:mushaf_reader/src/data/models/juz_model.dart';
+import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
+    show StyleModifier;
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 
 /// A widget that displays the Juz (part) glyph marker.
@@ -57,6 +59,17 @@ class JuzWidget extends StatelessWidget {
   /// Other properties like [fontSize] and [color] are preserved.
   final TextStyle? textStyle;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// JuzWidget(
+  ///   number: 1,
+  ///   styleModifier: (style) => style.copyWith(color: Colors.green),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// Callback invoked when the Juz glyph is tapped.
   ///
   /// Receives the Juz number (1-30).
@@ -81,6 +94,7 @@ class JuzWidget extends StatelessWidget {
     required this.number,
     this.fontSize,
     this.textStyle,
+    this.styleModifier,
     this.onTap,
     this.onLongPress,
     this.juzData,
@@ -112,14 +126,14 @@ class JuzWidget extends StatelessWidget {
   }
 
   Widget _buildContent(JuzModel juz) {
-    final effectiveFontSize = fontSize ?? 40.0;
-    final effectiveStyle =
-        textStyle?.copyWith(
-          fontFamily: MushafFonts.basmalahFamily,
-          package: packageName,
-          fontSize: effectiveFontSize,
-        ) ??
-        MushafFonts.basmalahStyle(fontSize: effectiveFontSize);
+    // fontSize priority: fontSize param → textStyle.fontSize → 40.0
+    final effectiveFontSize = fontSize ?? textStyle?.fontSize ?? 40.0;
+    final effectiveStyle = MushafTextStyleMerger.mergeBasmalahStyle(
+      userStyle: textStyle,
+      modifier: styleModifier,
+      baseSize: effectiveFontSize,
+      scaleFactor: 1.0,
+    );
 
     return onTap != null || onLongPress != null
         ? GestureDetector(
