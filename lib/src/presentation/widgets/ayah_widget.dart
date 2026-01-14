@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
-import 'package:mushaf_reader/src/core/fonts.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
+import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 
 /// A widget that displays a single Ayah (verse) with the correct QCF4 font.
 ///
@@ -79,6 +79,17 @@ class AyahWidget extends StatefulWidget {
   /// are preserved.
   final TextStyle? style;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// AyahWidget.fromId(
+  ///   ayahId: 1,
+  ///   styleModifier: (style) => style.copyWith(color: Colors.brown),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// Widget to display while loading the Ayah data.
   ///
   /// Defaults to a centered [CircularProgressIndicator].
@@ -94,6 +105,9 @@ class AyahWidget extends StatefulWidget {
   /// Set to `true` (default) for inline display.
   /// Set to `false` to preserve original line breaks.
   final bool removeNewLines;
+
+  /// Optional repository for testing.
+  final IQuranRepository? repository;
 
   /// Creates an AyahWidget that fetches by unique Ayah ID (1-6236).
   ///
@@ -113,9 +127,11 @@ class AyahWidget extends StatefulWidget {
     required int ayahId,
     this.fontSize,
     this.style,
+    this.styleModifier,
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
+    this.repository,
   }) : _ayahId = ayahId,
        _surah = null,
        _ayah = null;
@@ -140,9 +156,11 @@ class AyahWidget extends StatefulWidget {
     required int ayah,
     this.fontSize,
     this.style,
+    this.styleModifier,
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
+    this.repository,
   }) : _surah = surah,
        _ayah = ayah,
        _ayahId = null;
@@ -169,20 +187,23 @@ class _AyahWidgetState extends State<AyahWidget> {
         }
 
         final ayah = snapshot.data!;
-        final fontFamily = MushafFonts.forPage(ayah.page);
         final effectiveFontSize =
-            widget.fontSize ?? widget.style?.fontSize ?? 28.0;
+            widget.fontSize ??
+            widget.style?.fontSize ??
+            MushafBaseFontSizes.ayah;
+
+        final effectiveStyle = MushafTextStyleMerger.mergeAyahStyle(
+          userStyle: widget.style,
+          modifier: widget.styleModifier,
+          pageNumber: ayah.page,
+          baseSize: effectiveFontSize,
+          scaleFactor: 1.0,
+        );
 
         return Text(
           ayah.codeV4,
           textAlign: TextAlign.right,
-          style:
-              widget.style?.copyWith(
-                fontFamily: fontFamily,
-                package: packageName,
-                fontSize: effectiveFontSize,
-              ) ??
-              MushafFonts.pageStyle(fontFamily, fontSize: effectiveFontSize),
+          style: effectiveStyle,
         );
       },
     );
@@ -206,7 +227,7 @@ class _AyahWidgetState extends State<AyahWidget> {
 
   /// Initiates the async fetch of Ayah data.
   void _loadAyah() {
-    final repo = HiveQuranRepository();
+    final repo = widget.repository ?? HiveQuranRepository();
     _future = widget._ayahId != null
         ? repo.getAyah(widget._ayahId!, widget.removeNewLines)
         : repo.getAyahBySurah(

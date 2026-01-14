@@ -34,7 +34,6 @@ import 'package:mushaf_reader/src/presentation/screens/mushaf_page.dart';
 ///   void initState() {
 ///     super.initState();
 ///     _controller = MushafReaderController(initialPage: 1);
-///     _controller.init();
 ///   }
 ///
 ///   @override
@@ -77,8 +76,9 @@ import 'package:mushaf_reader/src/presentation/screens/mushaf_page.dart';
 ///
 /// ## RTL Support
 ///
-/// The Mushaf is read right-to-left. Set [reverse] to `true` (default) for
-/// authentic reading experience where swiping left goes to the next page.
+/// The Mushaf is read right-to-left. By default, [textDirection] is set to
+/// [TextDirection.rtl], providing an authentic reading experience where
+/// swiping right goes to the next page.
 ///
 /// See also:
 /// - [MushafReaderController], for programmatic control
@@ -96,11 +96,16 @@ class MushafReader extends StatefulWidget {
   /// Only used when [controller] is not provided.
   final int initialPage;
 
-  /// Whether to reverse page order for RTL reading.
+  /// Whether to reverse page order within the [textDirection].
   ///
-  /// When `true` (default), swiping left goes to the next page,
-  /// which matches the natural reading direction of Arabic text.
+  /// Defaults to `false`.
   final bool reverse;
+
+  /// The reading direction for the Mushaf.
+  ///
+  /// Defaults to [TextDirection.rtl], which matches the natural reading
+  /// direction of Arabic text (swiping right goes to the next page).
+  final TextDirection textDirection;
 
   /// Callback invoked when an Ayah is tapped.
   ///
@@ -145,7 +150,8 @@ class MushafReader extends StatefulWidget {
     super.key,
     this.controller,
     this.initialPage = 1,
-    this.reverse = true,
+    this.reverse = false,
+    this.textDirection = TextDirection.rtl,
     this.onAyahTap,
     this.onAyahLongPress,
     this.onPageChanged,
@@ -174,28 +180,31 @@ class _MushafReaderState extends State<MushafReader> {
           const Center(child: CircularProgressIndicator());
     }
 
-    return PageView.builder(
-      controller: _controller.pageController,
-      reverse: widget.reverse,
-      clipBehavior: widget.clipBehavior,
-      physics: widget.physics,
-      itemCount: 604,
-      onPageChanged: _onPageChanged,
-      itemBuilder: (context, index) {
-        final page = index + 1;
-        return MushafPage(
-          page: page,
-          style: widget.style,
-          loadingWidget: widget.pageLoadingWidget,
-          hideHeader: widget.hideHeader,
-          onTapAyah: widget.onAyahTap != null
-              ? (ayahId) => _handleAyahTap(ayahId)
-              : null,
-          onLongPressAyah: widget.onAyahLongPress != null
-              ? (ayahId) => _handleAyahLongPress(ayahId)
-              : null,
-        );
-      },
+    return Directionality(
+      textDirection: widget.textDirection,
+      child: PageView.builder(
+        controller: _controller.pageController,
+        reverse: widget.reverse,
+        clipBehavior: widget.clipBehavior,
+        physics: widget.physics,
+        itemCount: 604,
+        onPageChanged: _onPageChanged,
+        itemBuilder: (context, index) {
+          final page = index + 1;
+          return MushafPage(
+            page: page,
+            style: widget.style,
+            loadingWidget: widget.pageLoadingWidget,
+            hideHeader: widget.hideHeader,
+            onTapAyah: widget.onAyahTap != null
+                ? (ayahId) => _handleAyahTap(ayahId)
+                : null,
+            onLongPressAyah: widget.onAyahLongPress != null
+                ? (ayahId) => _handleAyahLongPress(ayahId)
+                : null,
+          );
+        },
+      ),
     );
   }
 
@@ -235,9 +244,6 @@ class _MushafReaderState extends State<MushafReader> {
   }
 
   Future<void> _initController() async {
-    if (!_controller.isInitialized) {
-      await _controller.init();
-    }
     if (mounted) {
       setState(() {
         _isInitialized = true;

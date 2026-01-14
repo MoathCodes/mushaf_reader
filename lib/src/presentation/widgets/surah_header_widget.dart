@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
+import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 
 /// A decorative banner widget displaying a Surah name.
 ///
-/// This widget renders an ornate SVG banner with the Surah name centered
+/// This widget renders an ornate PNG banner with the Surah name centered
 /// on top, matching the traditional Mushaf surah header design.
 ///
 /// ## Appearance
@@ -40,12 +40,7 @@ import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 /// See also:
 /// - [SurahNameWidget], used internally for the text
 /// - [MushafFonts.basmalahFamily], the font used for Surah names
-class SurahHeaderWidget extends StatelessWidget {
-  /// Cache for SVG widgets keyed by asset path and width.
-  ///
-  /// Avoids redundant SVG parsing for repeated renders.
-  static final Map<String, Widget> _svgCache = {};
-
+class SurahHeaderWidget extends StatefulWidget {
   /// The Surah data to display.
   ///
   /// If provided, the widget renders directly.
@@ -79,6 +74,11 @@ class SurahHeaderWidget extends StatelessWidget {
   /// automatically while preserving other style properties.
   final TextStyle? textStyle;
 
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization.
+  final StyleModifier? styleModifier;
+
   /// Callback invoked when the Surah header is tapped.
   ///
   /// Receives the Surah number (1-114).
@@ -89,16 +89,21 @@ class SurahHeaderWidget extends StatelessWidget {
   /// Receives the Surah number (1-114).
   final void Function(int surahNumber)? onLongPress;
 
+  /// Optional repository for testing.
+  final IQuranRepository? repository;
+
   /// Creates a SurahHeaderWidget with surah data.
   const SurahHeaderWidget({
     super.key,
     required SurahModel surahData,
     this.fontSize,
     this.textStyle,
+    this.styleModifier,
     this.isDark = false,
     this.width = 500,
     this.onTap,
     this.onLongPress,
+    this.repository,
   }) : _surahData = surahData,
        _surahNumber = null;
 
@@ -110,72 +115,95 @@ class SurahHeaderWidget extends StatelessWidget {
     super.key,
     this.fontSize,
     this.textStyle,
+    this.styleModifier,
     this.isDark = false,
     this.width = 500,
     this.onTap,
     this.onLongPress,
+    this.repository,
   }) : _surahData = null,
        _surahNumber = surahNumber;
 
   @override
-  Widget build(BuildContext context) {
-    final assetPath = isDark
-        ? 'assets/images/surah_banner_dark.svg'
-        : 'assets/images/surah_banner.svg';
+  State<SurahHeaderWidget> createState() => _SurahHeaderWidgetState();
+}
 
-    // Get cached SVG or create new one
-    final svg = _svgCache.putIfAbsent(
-      '${assetPath}_$width',
-      () => SvgPicture.asset(assetPath, package: 'mushaf_reader', width: width),
+class _SurahHeaderWidgetState extends State<SurahHeaderWidget> {
+  Future<SurahModel?>? _future;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget._surahData == null && widget._surahNumber != null) {
+      _loadFuture();
+    }
+  }
+
+  @override
+  void didUpdateWidget(SurahHeaderWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget._surahNumber != oldWidget._surahNumber) {
+      _loadFuture();
+    }
+  }
+
+  void _loadFuture() {
+    _future = (widget.repository ?? HiveQuranRepository())
+        .getSurah(widget._surahNumber!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Use PNG mainframe image for surah header banner
+    final bannerImage = Image.asset(
+      'assets/images/mainframe.png',
+      package: 'mushaf_reader',
+      width: widget.width,
+      fit: BoxFit.contain,
     );
 
-    final effectiveFontSize = fontSize ?? 25.0;
+    final effectiveFontSize = widget.fontSize ?? 25.0;
 
     // If we have surah data, render directly
-    if (_surahData != null) {
-      return _buildStack(svg, effectiveFontSize, _surahData);
+    if (widget._surahData != null) {
+      return _buildStack(bannerImage, effectiveFontSize, widget._surahData!);
     }
 
     // Otherwise, load asynchronously
     return FutureBuilder<SurahModel?>(
-      future: HiveQuranRepository().getSurah(_surahNumber!),
+      future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
             !snapshot.hasData ||
             snapshot.data == null) {
-          // Show just the SVG banner while loading
-          return svg;
+          // Show just the banner while loading
+          return bannerImage;
         }
-        return _buildStack(svg, effectiveFontSize, snapshot.data!);
+        return _buildStack(bannerImage, effectiveFontSize, snapshot.data!);
       },
     );
   }
 
   Widget _buildStack(
-    Widget svg,
+    Widget bannerImage,
     double effectiveFontSize,
     SurahModel surahData,
   ) {
     return GestureDetector(
-      onTap: () => onTap?.call(surahData.number),
-      onLongPress: () => onLongPress?.call(surahData.number),
+      onTap: () => widget.onTap?.call(surahData.number),
+      onLongPress: () => widget.onLongPress?.call(surahData.number),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          svg,
+          bannerImage,
           SurahNameWidget(
             surahData: surahData,
             fontSize: effectiveFontSize,
-            textStyle: textStyle,
+            textStyle: widget.textStyle,
+            styleModifier: widget.styleModifier,
           ),
         ],
       ),
     );
   }
-
-  /// Clears the SVG widget cache.
-  ///
-  /// Call this when disposing the Mushaf widget tree or when
-  /// switching between light and dark themes to release memory.
-  static void clearCache() => _svgCache.clear();
 }

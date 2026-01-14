@@ -1,6 +1,6 @@
 name: mushaf_reader
 description: "A new Flutter package project."
-version: 0.0.1
+version: 0.0.2
 homepage:
 
 environment:
@@ -40,6 +40,9 @@ flutter:
     - assets/hive/
 
   fonts:
+    - family: arsura
+      fonts:
+        - asset: assets/otf_fonts/arsura.ttf
     - family: QCF4_BSML
       fonts:
         - asset: assets/otf_fonts/QCF4_BSML.otf

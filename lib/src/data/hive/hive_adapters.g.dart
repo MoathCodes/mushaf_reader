@@ -8,7 +8,7 @@ part of 'hive_adapters.dart';
 
 class AyahModelAdapter extends TypeAdapter<AyahModel> {
   @override
-  final typeId = 0;
+  final typeId = 100;
 
   @override
   AyahModel read(BinaryReader reader) {
@@ -57,7 +57,7 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
 
 class PageLayoutsAdapter extends TypeAdapter<PageLayouts> {
   @override
-  final typeId = 1;
+  final typeId = 101;
 
   @override
   PageLayouts read(BinaryReader reader) {
@@ -100,7 +100,7 @@ class PageLayoutsAdapter extends TypeAdapter<PageLayouts> {
 
 class JuzModelAdapter extends TypeAdapter<JuzModel> {
   @override
-  final typeId = 2;
+  final typeId = 102;
 
   @override
   JuzModel read(BinaryReader reader) {
@@ -137,7 +137,7 @@ class JuzModelAdapter extends TypeAdapter<JuzModel> {
 
 class SurahModelAdapter extends TypeAdapter<SurahModel> {
   @override
-  final typeId = 3;
+  final typeId = 103;
 
   @override
   SurahModel read(BinaryReader reader) {

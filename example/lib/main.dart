@@ -4,6 +4,7 @@ import 'package:mushaf_reader/mushaf_reader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MushafReaderLibrary.ensureInitialized();
 
   runApp(const MushafExampleApp());
 }
@@ -42,17 +43,9 @@ class QuranReaderScreen extends StatefulWidget {
 class _QuranReaderScreenState extends State<QuranReaderScreen> {
   late final MushafReaderController _controller;
   bool _showControls = true;
-  bool _isInitialized = false;
 
   @override
   Widget build(BuildContext context) {
-    if (!_isInitialized) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFFFFBF0),
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF0),
       body: Stack(
@@ -64,8 +57,33 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
               controller: _controller,
               onAyahTap: _handleAyahTap,
               onAyahLongPress: _handleAyahLongPress,
-              style: const MushafStyle(
-                highlightColor: Color.fromARGB(100, 27, 67, 50),
+              // Example: Customize text styles using modifiers for easy
+              // customization. Use copyWith on the default style to change
+              // only what you need while preserving the library defaults.
+              // The fontFamily and package are always enforced automatically.
+              style: MushafStyle(
+                // Easy customization using modifiers - just modify the defaults!
+                ayahStyleModifier: (style) =>
+                    style.copyWith(color: const Color(0xFF1B4332)),
+                // Highlighted ayah with custom background
+                activeAyahStyleModifier: (style) => style.copyWith(
+                  color: const Color(0xFFFFFFFF),
+                  backgroundColor: const Color(0xFF2D6A4F),
+                ),
+                // Basmalah with custom color
+                basmalahStyleModifier: (style) =>
+                    style.copyWith(color: const Color(0xFF40916C)),
+                // Surah names with custom color
+                surahNameStyleModifier: (style) =>
+                    style.copyWith(color: const Color(0xFF52B788)),
+                // Juz indicators with custom color
+                juzStyleModifier: (style) =>
+                    style.copyWith(color: const Color(0xFF74C69D)),
+                // Page numbers with custom color
+                pageNumberStyleModifier: (style) =>
+                    style.copyWith(color: const Color(0xFF95D5B2)),
+                // Fallback highlight color (used if activeAyahStyle has no backgroundColor)
+                highlightColor: const Color.fromARGB(100, 27, 67, 50),
               ),
             ),
           ),
@@ -80,7 +98,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
               listenable: _controller,
               builder: (context, _) {
                 final pageInfo = _controller.currentPageInfo;
-                print(pageInfo);
+
                 return AppBar(
                   backgroundColor: Theme.of(
                     context,
@@ -126,12 +144,9 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
                   color: Theme.of(
                     context,
                   ).colorScheme.surface.withValues(alpha: 0.95),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
+                  padding: const .symmetric(vertical: 8, horizontal: 16),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: .spaceBetween,
                     children: [
                       IconButton(
                         onPressed: () =>
@@ -174,16 +189,14 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   void initState() {
     super.initState();
     _controller = MushafReaderController();
-    _initController();
   }
 
   void _handleAyahLongPress(AyahInfo info) async {
     if (!mounted) return;
-
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
+        padding: const .all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -194,13 +207,16 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
+            // Example: Standalone AyahWidget with custom styling
+            // The fontFamily and package are automatically enforced
+            // for correct QCF4 font rendering.
             AyahWidget.fromId(
               ayahId: info.ayahId,
-              style: const TextStyle(fontSize: 28),
+              style: const TextStyle(fontSize: 28, color: Color(0xFF1B4332)),
             ),
             const SizedBox(height: 24),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: .spaceEvenly,
               children: [
                 IconButton(
                   onPressed: () {},
@@ -231,20 +247,12 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   }
 
   void _handleAyahTap(AyahInfo info) {
-    print("Ayah Tapped");
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Tapped: ${info.reference}'),
         duration: const Duration(seconds: 1),
       ),
     );
-  }
-
-  Future<void> _initController() async {
-    await _controller.init();
-    if (mounted) {
-      setState(() => _isInitialized = true);
-    }
   }
 
   void _showSurahIndex() {
@@ -262,7 +270,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const .all(16.0),
                 child: Text(
                   'Surah Index',
                   style: Theme.of(context).textTheme.headlineSmall,

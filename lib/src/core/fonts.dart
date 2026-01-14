@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
+    show StyleModifier;
 
 /// The package name used for asset and font resolution.
 ///
@@ -135,4 +137,165 @@ class MushafFonts {
         height: 1.6,
         color: const Color(0xFF000000),
       );
+}
+
+/// A utility class that merges user-provided [TextStyle] objects with the
+/// required QCF4 font settings.
+///
+/// This class ensures that user customizations (color, fontWeight, decoration,
+/// shadows, letterSpacing, etc.) are preserved while always enforcing the
+/// correct [fontFamily] and [package] for proper Quran text rendering.
+///
+/// ## Usage
+///
+/// ```dart
+/// // For Ayah text (page-specific fonts)
+/// final style = MushafTextStyleMerger.mergeAyahStyle(
+///   userStyle: TextStyle(color: Colors.brown, fontWeight: FontWeight.w500),
+///   pageNumber: 15,
+///   baseSize: 28.0,
+///   scaleFactor: 1.2,
+/// );
+///
+/// // For Basmalah, Surah names, Juz markers (shared font)
+/// final basmalahStyle = MushafTextStyleMerger.mergeBasmalahStyle(
+///   userStyle: TextStyle(color: Colors.green),
+///   baseSize: 21.0,
+///   scaleFactor: 1.0,
+/// );
+/// ```
+///
+/// ## What Gets Preserved vs Overridden
+///
+/// **Preserved from user style:**
+/// - color, backgroundColor
+/// - fontWeight, fontStyle
+/// - letterSpacing, wordSpacing
+/// - height (line height)
+/// - decoration, decorationColor, decorationStyle, decorationThickness
+/// - shadows, fontFeatures, fontVariations
+/// - overflow, textBaseline
+///
+/// **Always overridden:**
+/// - fontFamily (set to appropriate QCF4 font)
+/// - package (set to 'mushaf_reader')
+/// - fontSize (calculated from baseSize × scaleFactor, unless user specifies)
+class MushafTextStyleMerger {
+  /// Private constructor to prevent instantiation.
+  MushafTextStyleMerger._();
+
+  /// Merges a user-provided style with the required Ayah font settings.
+  ///
+  /// [userStyle] - Optional user-provided TextStyle with customizations.
+  /// [modifier] - Optional function to modify the resolved style.
+  /// [pageNumber] - The Mushaf page number (1-604) to determine the font.
+  /// [baseSize] - Base font size before scaling (default: 28.0).
+  /// [scaleFactor] - Scale multiplier to apply to the font size (default: 1.0).
+  ///
+  /// Returns a [TextStyle] with the correct page-specific QCF4 font and
+  /// user customizations applied.
+  static TextStyle mergeAyahStyle({
+    TextStyle? userStyle,
+    StyleModifier? modifier,
+    required int pageNumber,
+    double baseSize = MushafBaseFontSizes.ayah,
+    double scaleFactor = 1.0,
+  }) {
+    final fontFamily = MushafFonts.forPage(pageNumber);
+    final fontSize = (userStyle?.fontSize ?? baseSize) * scaleFactor;
+
+    TextStyle result;
+    if (userStyle == null) {
+      result = MushafFonts.pageStyle(fontFamily, fontSize: fontSize);
+    } else {
+      result = userStyle.copyWith(
+        fontFamily: fontFamily,
+        package: packageName,
+        fontSize: fontSize,
+      );
+    }
+
+    // Apply modifier if provided, then re-enforce font settings
+    if (modifier != null) {
+      result = modifier(
+        result,
+      ).copyWith(fontFamily: fontFamily, package: packageName);
+    }
+
+    return result;
+  }
+
+  /// Merges a user-provided style with the required Basmalah font settings.
+  ///
+  /// Used for Basmalah text, Surah names, and Juz markers which all use
+  /// the shared QCF4_BSML font.
+  ///
+  /// [userStyle] - Optional user-provided TextStyle with customizations.
+  /// [modifier] - Optional function to modify the resolved style.
+  /// [baseSize] - Base font size before scaling (default: 21.0).
+  /// [scaleFactor] - Scale multiplier to apply to the font size (default: 1.0).
+  ///
+  /// Returns a [TextStyle] with the QCF4_BSML font and user customizations.
+  static TextStyle mergeBasmalahStyle({
+    TextStyle? userStyle,
+    StyleModifier? modifier,
+    double baseSize = MushafBaseFontSizes.basmalah,
+    double scaleFactor = 1.0,
+  }) {
+    final fontSize = (userStyle?.fontSize ?? baseSize) * scaleFactor;
+
+    TextStyle result;
+    if (userStyle == null) {
+      result = MushafFonts.basmalahStyle(fontSize: fontSize);
+    } else {
+      result = userStyle.copyWith(
+        fontFamily: MushafFonts.basmalahFamily,
+        package: packageName,
+        fontSize: fontSize,
+      );
+    }
+
+    // Apply modifier if provided, then re-enforce font settings
+    if (modifier != null) {
+      result = modifier(
+        result,
+      ).copyWith(fontFamily: MushafFonts.basmalahFamily, package: packageName);
+    }
+
+    return result;
+  }
+
+  /// Merges a user-provided style with the page number style settings.
+  ///
+  /// Page numbers don't require a specific QCF4 font, but this method
+  /// ensures consistency with other merge methods and applies scaling.
+  ///
+  /// [userStyle] - Optional user-provided TextStyle with customizations.
+  /// [modifier] - Optional function to modify the resolved style.
+  /// [baseSize] - Base font size before scaling (default: 20.0).
+  /// [scaleFactor] - Scale multiplier to apply to the font size (default: 1.0).
+  ///
+  /// Returns a [TextStyle] with user customizations and proper scaling.
+  static TextStyle mergePageNumberStyle({
+    TextStyle? userStyle,
+    StyleModifier? modifier,
+    double baseSize = MushafBaseFontSizes.pageNumber,
+    double scaleFactor = 1.0,
+  }) {
+    final fontSize = (userStyle?.fontSize ?? baseSize) * scaleFactor;
+
+    TextStyle result;
+    if (userStyle == null) {
+      result = MushafFonts.pageNumberStyle(fontSize: fontSize);
+    } else {
+      result = userStyle.copyWith(package: packageName, fontSize: fontSize);
+    }
+
+    // Apply modifier if provided, then re-enforce package
+    if (modifier != null) {
+      result = modifier(result).copyWith(package: packageName);
+    }
+
+    return result;
+  }
 }

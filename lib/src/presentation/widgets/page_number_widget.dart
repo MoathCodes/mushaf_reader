@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/src/core/extensions.dart';
 import 'package:mushaf_reader/src/core/fonts.dart';
+import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
+    show StyleModifier;
 
 /// A widget that displays a Mushaf page number in Hindu-Arabic numerals.
 ///
@@ -19,6 +21,18 @@ import 'package:mushaf_reader/src/core/fonts.dart';
 /// PageNumberWidget(page: 604) // Displays: ۶۰۴
 /// ```
 ///
+/// With custom styling:
+///
+/// ```dart
+/// PageNumberWidget(
+///   page: 1,
+///   textStyle: TextStyle(
+///     color: Colors.brown,
+///     fontWeight: FontWeight.bold,
+///   ),
+/// )
+/// ```
+///
 /// See also:
 /// - [IntHinduArabicExtension], which provides the conversion
 /// - [MushafFonts.pageNumberStyle], for the styling used
@@ -33,14 +47,45 @@ class PageNumberWidget extends StatelessWidget {
   /// If not provided, uses the base page number font size (20).
   final double? fontSize;
 
+  /// Custom text style for the page number.
+  ///
+  /// Properties like [color], [fontWeight], and [decoration] are preserved.
+  /// The [fontSize] parameter takes precedence over [textStyle.fontSize].
+  final TextStyle? textStyle;
+
+  /// A function to modify the resolved text style.
+  ///
+  /// Use this for easy customization:
+  /// ```dart
+  /// PageNumberWidget(
+  ///   page: 1,
+  ///   styleModifier: (style) => style.copyWith(color: Colors.brown),
+  /// )
+  /// ```
+  final StyleModifier? styleModifier;
+
   /// Creates a PageNumberWidget.
-  const PageNumberWidget({super.key, required this.page, this.fontSize});
+  const PageNumberWidget({
+    super.key,
+    required this.page,
+    this.fontSize,
+    this.textStyle,
+    this.styleModifier,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveStyle = MushafTextStyleMerger.mergePageNumberStyle(
+      userStyle: textStyle,
+      modifier: styleModifier,
+      baseSize:
+          fontSize ?? textStyle?.fontSize ?? MushafBaseFontSizes.pageNumber,
+      scaleFactor: 1.0,
+    );
+
     return Text(
       page.toHinduArabic(),
-      style: MushafFonts.pageNumberStyle(fontSize: fontSize ?? 20.0),
+      style: effectiveStyle,
       textAlign: TextAlign.center,
     );
   }
