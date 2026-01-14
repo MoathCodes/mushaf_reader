@@ -118,12 +118,20 @@ class _PageAyahWidgetState extends State<PageAyahWidget> {
   /// The selected Ayah ID used to build [_cachedSpans].
   int? _cachedSelectedAyah;
 
+  /// The style used to build [_cachedSpans].
+  TextStyle? _cachedStyle;
+
+  /// The active style used to build [_cachedSpans].
+  TextStyle? _cachedActiveStyle;
+
   @override
   Widget build(BuildContext context) {
     // Check if we need to rebuild spans
     if (_cachedSpans == null ||
         _cachedFullText != widget.fullText ||
-        _cachedSelectedAyah != widget.selectedAyahId) {
+        _cachedSelectedAyah != widget.selectedAyahId ||
+        _cachedStyle != widget.style ||
+        _cachedActiveStyle != widget.activeStyle) {
       _buildSpans();
     }
 
@@ -218,5 +226,7 @@ class _PageAyahWidgetState extends State<PageAyahWidget> {
     _cachedSpans = spans;
     _cachedFullText = widget.fullText;
     _cachedSelectedAyah = widget.selectedAyahId;
+    _cachedStyle = widget.style;
+    _cachedActiveStyle = widget.activeStyle;
   }
 }

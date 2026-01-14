@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
+import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 
 /// A widget that displays a single Ayah (verse) with the correct QCF4 font.
 ///
@@ -105,6 +106,9 @@ class AyahWidget extends StatefulWidget {
   /// Set to `false` to preserve original line breaks.
   final bool removeNewLines;
 
+  /// Optional repository for testing.
+  final IQuranRepository? repository;
+
   /// Creates an AyahWidget that fetches by unique Ayah ID (1-6236).
   ///
   /// This is the preferred constructor when you have the global Ayah
@@ -127,6 +131,7 @@ class AyahWidget extends StatefulWidget {
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
+    this.repository,
   }) : _ayahId = ayahId,
        _surah = null,
        _ayah = null;
@@ -155,6 +160,7 @@ class AyahWidget extends StatefulWidget {
     this.loadingWidget,
     this.errorWidget,
     this.removeNewLines = true,
+    this.repository,
   }) : _surah = surah,
        _ayah = ayah,
        _ayahId = null;
@@ -221,7 +227,7 @@ class _AyahWidgetState extends State<AyahWidget> {
 
   /// Initiates the async fetch of Ayah data.
   void _loadAyah() {
-    final repo = HiveQuranRepository();
+    final repo = widget.repository ?? HiveQuranRepository();
     _future = widget._ayahId != null
         ? repo.getAyah(widget._ayahId!, widget.removeNewLines)
         : repo.getAyahBySurah(

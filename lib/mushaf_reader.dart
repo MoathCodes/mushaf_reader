@@ -92,6 +92,7 @@ export 'src/logic/mushaf_reader_controller.dart';
 // Screens
 export 'src/presentation/screens/mushaf_page.dart';
 export 'src/presentation/screens/mushaf_reader.dart';
+export 'src/presentation/screens/mushaf_two_page_reader.dart';
 // Widgets
 export 'src/presentation/widgets/ayah_widget.dart';
 export 'src/presentation/widgets/basmalah_widget.dart';
