@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mushaf_reader/mushaf_reader.dart';
-import 'package:mushaf_reader/src/core/fonts.dart';
-import 'package:mushaf_reader/src/data/models/mushaf_style.dart'
-    show StyleModifier;
 import 'package:mushaf_reader/src/data/repository/hive_quran_repo.dart';
 import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 
