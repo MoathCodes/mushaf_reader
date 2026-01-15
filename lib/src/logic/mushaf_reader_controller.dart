@@ -111,7 +111,7 @@ class MushafReaderController extends ChangeNotifier {
   final int initialPage;
 
   /// Number of pages to display per viewport (1 or 2).
-  final int pagesPerViewport;
+  int _pagesPerViewport;
 
   /// Current page number (1-604).
   ///
@@ -150,10 +150,11 @@ class MushafReaderController extends ChangeNotifier {
   MushafReaderController({
     PageController? pageController,
     this.initialPage = 1,
-    this.pagesPerViewport = 1,
+    int pagesPerViewport = 1,
   }) : _pageController = pageController,
        _ownsPageController = pageController == null,
        _repo = HiveQuranRepository(),
+       _pagesPerViewport = pagesPerViewport,
        _currentPage =
            ((initialPage - 1) ~/ pagesPerViewport) * pagesPerViewport + 1 {
     _init(checkInit: true);
@@ -167,10 +168,11 @@ class MushafReaderController extends ChangeNotifier {
     required IQuranRepository repository,
     PageController? pageController,
     this.initialPage = 1,
-    this.pagesPerViewport = 1,
+    int pagesPerViewport = 1,
   }) : _pageController = pageController,
        _ownsPageController = pageController == null,
        _repo = repository,
+       _pagesPerViewport = pagesPerViewport,
        _currentPage =
            ((initialPage - 1) ~/ pagesPerViewport) * pagesPerViewport + 1 {
     _init(checkInit: false);
@@ -258,6 +260,29 @@ class MushafReaderController extends ChangeNotifier {
   /// The currently selected Ayah ID, or null if none.
   int? get selectedAyahId => _selectedAyahId;
 
+  /// Number of pages displayed per viewport (1 or 2).
+  ///
+  /// Use this setter when switching between single-page and two-page modes.
+  int get pagesPerViewport => _pagesPerViewport;
+  set pagesPerViewport(int value) {
+    if (_pagesPerViewport != value && (value == 1 || value == 2)) {
+      // Remember the current page before changing viewport mode
+      final currentPage = _currentPage;
+      _pagesPerViewport = value;
+      // Recalculate current page position for the new viewport mode
+      final normalizedPage = ((currentPage - 1) ~/ value) * value + 1;
+      _currentPage = normalizedPage;
+      // Jump the PageController to the correct viewport index after frame completes
+      final viewportIndex = (normalizedPage - 1) ~/ value;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_pageController?.hasClients ?? false) {
+          _pageController!.jumpToPage(viewportIndex);
+        }
+      });
+      notifyListeners();
+    }
+  }
+
   // ============================================================
   // Initialization
   // ============================================================
@@ -269,10 +294,11 @@ class MushafReaderController extends ChangeNotifier {
     Curve curve = Curves.easeInOut,
   }) async {
     if (page < 1 || page > 604) return;
-    
-    final normalizedPage = ((page - 1) ~/ pagesPerViewport) * pagesPerViewport + 1;
+
+    final normalizedPage =
+        ((page - 1) ~/ pagesPerViewport) * pagesPerViewport + 1;
     _setCurrentPage(normalizedPage);
-    
+
     final viewportIndex = (normalizedPage - 1) ~/ pagesPerViewport;
     if (pageController.hasClients) {
       await pageController.animateToPage(
@@ -486,10 +512,11 @@ class MushafReaderController extends ChangeNotifier {
   /// Updates the current page and navigates the PageView.
   void jumpToPage(int page) {
     if (page < 1 || page > 604) return;
-    
-    final normalizedPage = ((page - 1) ~/ pagesPerViewport) * pagesPerViewport + 1;
+
+    final normalizedPage =
+        ((page - 1) ~/ pagesPerViewport) * pagesPerViewport + 1;
     _setCurrentPage(normalizedPage);
-    
+
     final viewportIndex = (normalizedPage - 1) ~/ pagesPerViewport;
     if (pageController.hasClients) {
       pageController.jumpToPage(viewportIndex);
@@ -620,7 +647,7 @@ class MushafReaderController extends ChangeNotifier {
     if (pagesPerViewport == 2 && page + 1 <= 604) {
       nextInfo = await getPageInfo(page + 1);
     }
-    
+
     // Only update if we're still on the same page
     if (_currentPage == page) {
       _currentPageInfo = info;

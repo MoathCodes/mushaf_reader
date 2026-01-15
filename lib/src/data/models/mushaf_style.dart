@@ -195,11 +195,19 @@ class MushafStyle {
   /// The `fontFamily` and `package` are always overridden.
   final TextStyle? basmalahStyle;
 
-  /// The text style applied to Surah name text in headers.
+  /// The text style applied to Surah name text at the top of the page.
   ///
   /// Uses the shared QCF4_BSML font. Customize color, weight, etc.
   /// The `fontFamily` and `package` are always overridden.
   final TextStyle? surahNameStyle;
+
+  /// The text style applied to Surah name text displayed in the header banner.
+  ///
+  /// This is separate from [surahNameStyle] to allow different styling for
+  /// the surah name when it appears inside the decorative header vs. at the top.
+  /// Uses the shared QCF4_BSML font. Customize color, weight, etc.
+  /// The `fontFamily` and `package` are always overridden.
+  final TextStyle? headerSurahNameStyle;
 
   /// The text style applied to Juz number indicators.
   ///
@@ -243,6 +251,11 @@ class MushafStyle {
   /// See [ayahStyleModifier] for usage pattern.
   final StyleModifier? surahNameStyleModifier;
 
+  /// A function to modify the default header Surah name text style.
+  ///
+  /// See [ayahStyleModifier] for usage pattern.
+  final StyleModifier? headerSurahNameStyleModifier;
+
   /// A function to modify the default Juz indicator text style.
   ///
   /// See [ayahStyleModifier] for usage pattern.
@@ -252,6 +265,12 @@ class MushafStyle {
   ///
   /// See [ayahStyleModifier] for usage pattern.
   final StyleModifier? pageNumberStyleModifier;
+
+  /// Optional custom image asset path for the surah header decoration.
+  ///
+  /// If provided, this image will be used instead of the default header banner.
+  /// The image should be an asset path (e.g., 'assets/images/custom_header.png').
+  final String? surahHeaderImage;
 
   /// The background color for highlighted/selected Ayahs.
   ///
@@ -286,10 +305,13 @@ class MushafStyle {
     this.basmalahStyleModifier,
     this.surahNameStyle,
     this.surahNameStyleModifier,
+    this.headerSurahNameStyle,
+    this.headerSurahNameStyleModifier,
     this.juzStyle,
     this.juzStyleModifier,
     this.pageNumberStyle,
     this.pageNumberStyleModifier,
+    this.surahHeaderImage,
     this.highlightColor = const Color.fromARGB(202, 245, 205, 110),
     this.backgroundColor,
     this.scale = const MushafScale(),
@@ -308,10 +330,13 @@ class MushafStyle {
     StyleModifier? basmalahStyleModifier,
     TextStyle? surahNameStyle,
     StyleModifier? surahNameStyleModifier,
+    TextStyle? headerSurahNameStyle,
+    StyleModifier? headerSurahNameStyleModifier,
     TextStyle? juzStyle,
     StyleModifier? juzStyleModifier,
     TextStyle? pageNumberStyle,
     StyleModifier? pageNumberStyleModifier,
+    String? surahHeaderImage,
     Color? highlightColor,
     Color? backgroundColor,
     MushafScale? scale,
@@ -328,11 +353,15 @@ class MushafStyle {
       surahNameStyle: surahNameStyle ?? this.surahNameStyle,
       surahNameStyleModifier:
           surahNameStyleModifier ?? this.surahNameStyleModifier,
+      headerSurahNameStyle: headerSurahNameStyle ?? this.headerSurahNameStyle,
+      headerSurahNameStyleModifier:
+          headerSurahNameStyleModifier ?? this.headerSurahNameStyleModifier,
       juzStyle: juzStyle ?? this.juzStyle,
       juzStyleModifier: juzStyleModifier ?? this.juzStyleModifier,
       pageNumberStyle: pageNumberStyle ?? this.pageNumberStyle,
       pageNumberStyleModifier:
           pageNumberStyleModifier ?? this.pageNumberStyleModifier,
+      surahHeaderImage: surahHeaderImage ?? this.surahHeaderImage,
       highlightColor: highlightColor ?? this.highlightColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       scale: scale ?? this.scale,

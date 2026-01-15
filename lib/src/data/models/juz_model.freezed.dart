@@ -21,7 +21,13 @@ mixin _$JuzModel {
 ///
 /// This glyph should be rendered using the Basmalah font family
 /// (QCF4_BSML) for correct display.
- String get glyph;
+ String get glyph;/// The page number where this Juz begins (1-604).
+///
+/// Useful for quick navigation to the start of a Juz.
+ int? get startPage;/// The global Ayah ID where this Juz begins (1-6236).
+///
+/// This is the ID of the first Ayah in the Juz.
+ int? get startAyahId;
 /// Create a copy of JuzModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +38,16 @@ $JuzModelCopyWith<JuzModel> get copyWith => _$JuzModelCopyWithImpl<JuzModel>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph);
+int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId);
 
 @override
 String toString() {
-  return 'JuzModel(number: $number, glyph: $glyph)';
+  return 'JuzModel(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
 }
 
 
@@ -52,7 +58,7 @@ abstract mixin class $JuzModelCopyWith<$Res>  {
   factory $JuzModelCopyWith(JuzModel value, $Res Function(JuzModel) _then) = _$JuzModelCopyWithImpl;
 @useResult
 $Res call({
- int number, String glyph
+ int number, String glyph, int? startPage, int? startAyahId
 });
 
 
@@ -69,11 +75,13 @@ class _$JuzModelCopyWithImpl<$Res>
 
 /// Create a copy of JuzModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,}) {
   return _then(_self.copyWith(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
-as String,
+as String,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
+as int?,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -158,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JuzModel() when $default != null:
-return $default(_that.number,_that.glyph);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   return orElse();
 
 }
@@ -179,10 +187,10 @@ return $default(_that.number,_that.glyph);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId)  $default,) {final _that = this;
 switch (_that) {
 case _JuzModel():
-return $default(_that.number,_that.glyph);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +207,10 @@ return $default(_that.number,_that.glyph);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  int? startPage,  int? startAyahId)?  $default,) {final _that = this;
 switch (_that) {
 case _JuzModel() when $default != null:
-return $default(_that.number,_that.glyph);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   return null;
 
 }
@@ -214,7 +222,7 @@ return $default(_that.number,_that.glyph);case _:
 
 
 class _JuzModel extends JuzModel {
-   _JuzModel({required this.number, required this.glyph}): super._();
+   _JuzModel({required this.number, required this.glyph, this.startPage, this.startAyahId}): super._();
   
 
 /// The Juz number (1-30).
@@ -226,6 +234,14 @@ class _JuzModel extends JuzModel {
 /// This glyph should be rendered using the Basmalah font family
 /// (QCF4_BSML) for correct display.
 @override final  String glyph;
+/// The page number where this Juz begins (1-604).
+///
+/// Useful for quick navigation to the start of a Juz.
+@override final  int? startPage;
+/// The global Ayah ID where this Juz begins (1-6236).
+///
+/// This is the ID of the first Ayah in the Juz.
+@override final  int? startAyahId;
 
 /// Create a copy of JuzModel
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +253,16 @@ _$JuzModelCopyWith<_JuzModel> get copyWith => __$JuzModelCopyWithImpl<_JuzModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph);
+int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId);
 
 @override
 String toString() {
-  return 'JuzModel(number: $number, glyph: $glyph)';
+  return 'JuzModel(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
 }
 
 
@@ -257,7 +273,7 @@ abstract mixin class _$JuzModelCopyWith<$Res> implements $JuzModelCopyWith<$Res>
   factory _$JuzModelCopyWith(_JuzModel value, $Res Function(_JuzModel) _then) = __$JuzModelCopyWithImpl;
 @override @useResult
 $Res call({
- int number, String glyph
+ int number, String glyph, int? startPage, int? startAyahId
 });
 
 
@@ -274,11 +290,13 @@ class __$JuzModelCopyWithImpl<$Res>
 
 /// Create a copy of JuzModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,}) {
   return _then(_JuzModel(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
-as String,
+as String,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
+as int?,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

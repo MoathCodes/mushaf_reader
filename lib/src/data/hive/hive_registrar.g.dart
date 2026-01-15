@@ -2,7 +2,7 @@
 // Do not modify
 // Check in to version control
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:mushaf_reader/src/data/hive/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
@@ -10,6 +10,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(AyahModelAdapter());
     registerAdapter(JuzModelAdapter());
     registerAdapter(PageLayoutsAdapter());
+    registerAdapter(RevelationTypeAdapter());
     registerAdapter(SurahModelAdapter());
   }
 }
@@ -19,6 +20,7 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(AyahModelAdapter());
     registerAdapter(JuzModelAdapter());
     registerAdapter(PageLayoutsAdapter());
+    registerAdapter(RevelationTypeAdapter());
     registerAdapter(SurahModelAdapter());
   }
 }

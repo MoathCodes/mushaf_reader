@@ -27,7 +27,14 @@ mixin _$SurahModel {
 /// QCF4 glyph which is for rendering in the Mushaf font.
  String? get nameArabic;/// The English transliterated name of the Surah (e.g., "Al-Faatiha").
  String? get nameEnglish;/// The page number where this Surah begins (1-604).
- int? get startPage;
+ int? get startPage;/// The revelation type of this Surah.
+///
+/// Indicates whether the Surah was revealed in Mecca or Medina.
+ RevelationType? get revelationType;/// The English translation of the Surah name meaning.
+///
+/// For example, "The Opening" for Al-Fatiha.
+ String? get englishNameTranslation;/// The total number of Ayahs (verses) in this Surah.
+ int? get ayahCount;
 /// Create a copy of SurahModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -38,16 +45,16 @@ $SurahModelCopyWith<SurahModel> get copyWith => _$SurahModelCopyWithImpl<SurahMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurahModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&(identical(other.nameArabic, nameArabic) || other.nameArabic == nameArabic)&&(identical(other.nameEnglish, nameEnglish) || other.nameEnglish == nameEnglish)&&(identical(other.startPage, startPage) || other.startPage == startPage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SurahModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&(identical(other.nameArabic, nameArabic) || other.nameArabic == nameArabic)&&(identical(other.nameEnglish, nameEnglish) || other.nameEnglish == nameEnglish)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.revelationType, revelationType) || other.revelationType == revelationType)&&(identical(other.englishNameTranslation, englishNameTranslation) || other.englishNameTranslation == englishNameTranslation)&&(identical(other.ayahCount, ayahCount) || other.ayahCount == ayahCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph,hasBasmalah,nameArabic,nameEnglish,startPage);
+int get hashCode => Object.hash(runtimeType,number,glyph,hasBasmalah,nameArabic,nameEnglish,startPage,revelationType,englishNameTranslation,ayahCount);
 
 @override
 String toString() {
-  return 'SurahModel(number: $number, glyph: $glyph, hasBasmalah: $hasBasmalah, nameArabic: $nameArabic, nameEnglish: $nameEnglish, startPage: $startPage)';
+  return 'SurahModel(number: $number, glyph: $glyph, hasBasmalah: $hasBasmalah, nameArabic: $nameArabic, nameEnglish: $nameEnglish, startPage: $startPage, revelationType: $revelationType, englishNameTranslation: $englishNameTranslation, ayahCount: $ayahCount)';
 }
 
 
@@ -58,7 +65,7 @@ abstract mixin class $SurahModelCopyWith<$Res>  {
   factory $SurahModelCopyWith(SurahModel value, $Res Function(SurahModel) _then) = _$SurahModelCopyWithImpl;
 @useResult
 $Res call({
- int number, String glyph, bool hasBasmalah, String? nameArabic, String? nameEnglish, int? startPage
+ int number, String glyph, bool hasBasmalah, String? nameArabic, String? nameEnglish, int? startPage, RevelationType? revelationType, String? englishNameTranslation, int? ayahCount
 });
 
 
@@ -75,7 +82,7 @@ class _$SurahModelCopyWithImpl<$Res>
 
 /// Create a copy of SurahModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? hasBasmalah = null,Object? nameArabic = freezed,Object? nameEnglish = freezed,Object? startPage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? hasBasmalah = null,Object? nameArabic = freezed,Object? nameEnglish = freezed,Object? startPage = freezed,Object? revelationType = freezed,Object? englishNameTranslation = freezed,Object? ayahCount = freezed,}) {
   return _then(_self.copyWith(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
@@ -83,6 +90,9 @@ as String,hasBasmalah: null == hasBasmalah ? _self.hasBasmalah : hasBasmalah // 
 as bool,nameArabic: freezed == nameArabic ? _self.nameArabic : nameArabic // ignore: cast_nullable_to_non_nullable
 as String?,nameEnglish: freezed == nameEnglish ? _self.nameEnglish : nameEnglish // ignore: cast_nullable_to_non_nullable
 as String?,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
+as int?,revelationType: freezed == revelationType ? _self.revelationType : revelationType // ignore: cast_nullable_to_non_nullable
+as RevelationType?,englishNameTranslation: freezed == englishNameTranslation ? _self.englishNameTranslation : englishNameTranslation // ignore: cast_nullable_to_non_nullable
+as String?,ayahCount: freezed == ayahCount ? _self.ayahCount : ayahCount // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -168,10 +178,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage,  RevelationType? revelationType,  String? englishNameTranslation,  int? ayahCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SurahModel() when $default != null:
-return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage);case _:
+return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage,_that.revelationType,_that.englishNameTranslation,_that.ayahCount);case _:
   return orElse();
 
 }
@@ -189,10 +199,10 @@ return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage,  RevelationType? revelationType,  String? englishNameTranslation,  int? ayahCount)  $default,) {final _that = this;
 switch (_that) {
 case _SurahModel():
-return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage);case _:
+return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage,_that.revelationType,_that.englishNameTranslation,_that.ayahCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +219,10 @@ return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  bool hasBasmalah,  String? nameArabic,  String? nameEnglish,  int? startPage,  RevelationType? revelationType,  String? englishNameTranslation,  int? ayahCount)?  $default,) {final _that = this;
 switch (_that) {
 case _SurahModel() when $default != null:
-return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage);case _:
+return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_that.nameEnglish,_that.startPage,_that.revelationType,_that.englishNameTranslation,_that.ayahCount);case _:
   return null;
 
 }
@@ -224,7 +234,7 @@ return $default(_that.number,_that.glyph,_that.hasBasmalah,_that.nameArabic,_tha
 
 
 class _SurahModel extends SurahModel {
-   _SurahModel({required this.number, required this.glyph, required this.hasBasmalah, this.nameArabic, this.nameEnglish, this.startPage}): super._();
+   _SurahModel({required this.number, required this.glyph, required this.hasBasmalah, this.nameArabic, this.nameEnglish, this.startPage, this.revelationType, this.englishNameTranslation, this.ayahCount}): super._();
   
 
 /// The Surah (chapter) number (1-114).
@@ -246,6 +256,16 @@ class _SurahModel extends SurahModel {
 @override final  String? nameEnglish;
 /// The page number where this Surah begins (1-604).
 @override final  int? startPage;
+/// The revelation type of this Surah.
+///
+/// Indicates whether the Surah was revealed in Mecca or Medina.
+@override final  RevelationType? revelationType;
+/// The English translation of the Surah name meaning.
+///
+/// For example, "The Opening" for Al-Fatiha.
+@override final  String? englishNameTranslation;
+/// The total number of Ayahs (verses) in this Surah.
+@override final  int? ayahCount;
 
 /// Create a copy of SurahModel
 /// with the given fields replaced by the non-null parameter values.
@@ -257,16 +277,16 @@ _$SurahModelCopyWith<_SurahModel> get copyWith => __$SurahModelCopyWithImpl<_Sur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&(identical(other.nameArabic, nameArabic) || other.nameArabic == nameArabic)&&(identical(other.nameEnglish, nameEnglish) || other.nameEnglish == nameEnglish)&&(identical(other.startPage, startPage) || other.startPage == startPage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&(identical(other.nameArabic, nameArabic) || other.nameArabic == nameArabic)&&(identical(other.nameEnglish, nameEnglish) || other.nameEnglish == nameEnglish)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.revelationType, revelationType) || other.revelationType == revelationType)&&(identical(other.englishNameTranslation, englishNameTranslation) || other.englishNameTranslation == englishNameTranslation)&&(identical(other.ayahCount, ayahCount) || other.ayahCount == ayahCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph,hasBasmalah,nameArabic,nameEnglish,startPage);
+int get hashCode => Object.hash(runtimeType,number,glyph,hasBasmalah,nameArabic,nameEnglish,startPage,revelationType,englishNameTranslation,ayahCount);
 
 @override
 String toString() {
-  return 'SurahModel(number: $number, glyph: $glyph, hasBasmalah: $hasBasmalah, nameArabic: $nameArabic, nameEnglish: $nameEnglish, startPage: $startPage)';
+  return 'SurahModel(number: $number, glyph: $glyph, hasBasmalah: $hasBasmalah, nameArabic: $nameArabic, nameEnglish: $nameEnglish, startPage: $startPage, revelationType: $revelationType, englishNameTranslation: $englishNameTranslation, ayahCount: $ayahCount)';
 }
 
 
@@ -277,7 +297,7 @@ abstract mixin class _$SurahModelCopyWith<$Res> implements $SurahModelCopyWith<$
   factory _$SurahModelCopyWith(_SurahModel value, $Res Function(_SurahModel) _then) = __$SurahModelCopyWithImpl;
 @override @useResult
 $Res call({
- int number, String glyph, bool hasBasmalah, String? nameArabic, String? nameEnglish, int? startPage
+ int number, String glyph, bool hasBasmalah, String? nameArabic, String? nameEnglish, int? startPage, RevelationType? revelationType, String? englishNameTranslation, int? ayahCount
 });
 
 
@@ -294,7 +314,7 @@ class __$SurahModelCopyWithImpl<$Res>
 
 /// Create a copy of SurahModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? hasBasmalah = null,Object? nameArabic = freezed,Object? nameEnglish = freezed,Object? startPage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? hasBasmalah = null,Object? nameArabic = freezed,Object? nameEnglish = freezed,Object? startPage = freezed,Object? revelationType = freezed,Object? englishNameTranslation = freezed,Object? ayahCount = freezed,}) {
   return _then(_SurahModel(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
@@ -302,6 +322,9 @@ as String,hasBasmalah: null == hasBasmalah ? _self.hasBasmalah : hasBasmalah // 
 as bool,nameArabic: freezed == nameArabic ? _self.nameArabic : nameArabic // ignore: cast_nullable_to_non_nullable
 as String?,nameEnglish: freezed == nameEnglish ? _self.nameEnglish : nameEnglish // ignore: cast_nullable_to_non_nullable
 as String?,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
+as int?,revelationType: freezed == revelationType ? _self.revelationType : revelationType // ignore: cast_nullable_to_non_nullable
+as RevelationType?,englishNameTranslation: freezed == englishNameTranslation ? _self.englishNameTranslation : englishNameTranslation // ignore: cast_nullable_to_non_nullable
+as String?,ayahCount: freezed == ayahCount ? _self.ayahCount : ayahCount // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }

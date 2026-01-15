@@ -380,8 +380,12 @@ class _MushafPageState extends State<MushafPage>
             surahData: block.toSurahModel(),
             width: width,
             fontSize: basmalahFontSize,
-            textStyle: mushafStyle.surahNameStyle,
-            styleModifier: mushafStyle.surahNameStyleModifier,
+            textStyle:
+                mushafStyle.headerSurahNameStyle ?? mushafStyle.surahNameStyle,
+            styleModifier:
+                mushafStyle.headerSurahNameStyleModifier ??
+                mushafStyle.surahNameStyleModifier,
+            customHeaderImage: mushafStyle.surahHeaderImage,
             onTap: widget.onTapSurahHeader,
             onLongPress: widget.onLongPressSurahHeader,
           ),

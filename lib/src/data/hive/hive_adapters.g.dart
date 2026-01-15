@@ -8,7 +8,7 @@ part of 'hive_adapters.dart';
 
 class AyahModelAdapter extends TypeAdapter<AyahModel> {
   @override
-  final typeId = 100;
+  final typeId = 379;
 
   @override
   AyahModel read(BinaryReader reader) {
@@ -23,13 +23,19 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
       surah: (fields[3] as num).toInt(),
       numberInSurah: (fields[4] as num).toInt(),
       text: fields[5] as String,
+      textPlain: fields[6] as String?,
+      manzil: (fields[7] as num?)?.toInt(),
+      ruku: (fields[8] as num?)?.toInt(),
+      hizbQuarter: (fields[9] as num?)?.toInt(),
+      sajda: fields[10] as bool?,
+      pageInSurah: (fields[11] as num?)?.toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, AyahModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +47,19 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
       ..writeByte(4)
       ..write(obj.numberInSurah)
       ..writeByte(5)
-      ..write(obj.text);
+      ..write(obj.text)
+      ..writeByte(6)
+      ..write(obj.textPlain)
+      ..writeByte(7)
+      ..write(obj.manzil)
+      ..writeByte(8)
+      ..write(obj.ruku)
+      ..writeByte(9)
+      ..write(obj.hizbQuarter)
+      ..writeByte(10)
+      ..write(obj.sajda)
+      ..writeByte(11)
+      ..write(obj.pageInSurah);
   }
 
   @override
@@ -57,7 +75,7 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
 
 class PageLayoutsAdapter extends TypeAdapter<PageLayouts> {
   @override
-  final typeId = 101;
+  final typeId = 380;
 
   @override
   PageLayouts read(BinaryReader reader) {
@@ -100,7 +118,7 @@ class PageLayoutsAdapter extends TypeAdapter<PageLayouts> {
 
 class JuzModelAdapter extends TypeAdapter<JuzModel> {
   @override
-  final typeId = 102;
+  final typeId = 381;
 
   @override
   JuzModel read(BinaryReader reader) {
@@ -111,17 +129,23 @@ class JuzModelAdapter extends TypeAdapter<JuzModel> {
     return JuzModel(
       number: (fields[0] as num).toInt(),
       glyph: fields[1] as String,
+      startPage: (fields[2] as num?)?.toInt(),
+      startAyahId: (fields[3] as num?)?.toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, JuzModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
-      ..write(obj.glyph);
+      ..write(obj.glyph)
+      ..writeByte(2)
+      ..write(obj.startPage)
+      ..writeByte(3)
+      ..write(obj.startAyahId);
   }
 
   @override
@@ -137,7 +161,7 @@ class JuzModelAdapter extends TypeAdapter<JuzModel> {
 
 class SurahModelAdapter extends TypeAdapter<SurahModel> {
   @override
-  final typeId = 103;
+  final typeId = 382;
 
   @override
   SurahModel read(BinaryReader reader) {
@@ -152,13 +176,16 @@ class SurahModelAdapter extends TypeAdapter<SurahModel> {
       nameArabic: fields[3] as String?,
       nameEnglish: fields[4] as String?,
       startPage: (fields[5] as num?)?.toInt(),
+      revelationType: fields[6] as RevelationType?,
+      englishNameTranslation: fields[7] as String?,
+      ayahCount: (fields[8] as num?)?.toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, SurahModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
@@ -170,7 +197,13 @@ class SurahModelAdapter extends TypeAdapter<SurahModel> {
       ..writeByte(4)
       ..write(obj.nameEnglish)
       ..writeByte(5)
-      ..write(obj.startPage);
+      ..write(obj.startPage)
+      ..writeByte(6)
+      ..write(obj.revelationType)
+      ..writeByte(7)
+      ..write(obj.englishNameTranslation)
+      ..writeByte(8)
+      ..write(obj.ayahCount);
   }
 
   @override
@@ -180,6 +213,43 @@ class SurahModelAdapter extends TypeAdapter<SurahModel> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is SurahModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RevelationTypeAdapter extends TypeAdapter<RevelationType> {
+  @override
+  final typeId = 383;
+
+  @override
+  RevelationType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return RevelationType.meccan;
+      case 1:
+        return RevelationType.medinan;
+      default:
+        return RevelationType.meccan;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, RevelationType obj) {
+    switch (obj) {
+      case RevelationType.meccan:
+        writer.writeByte(0);
+      case RevelationType.medinan:
+        writer.writeByte(1);
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RevelationTypeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

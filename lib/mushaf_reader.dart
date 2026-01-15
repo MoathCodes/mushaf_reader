@@ -86,6 +86,7 @@ export 'src/data/models/juz_model.dart';
 export 'src/data/models/mushaf_page_info.dart';
 export 'src/data/models/mushaf_style.dart';
 export 'src/data/models/quran_page_model.dart';
+export 'src/data/models/revelation_type.dart';
 export 'src/data/models/surah_model.dart';
 // Controller
 export 'src/logic/mushaf_reader_controller.dart';

@@ -222,6 +222,8 @@ class _MushafReaderState extends State<MushafReader> {
     super.initState();
     if (widget.controller != null) {
       _controller = widget.controller!;
+      // Ensure controller is configured for single-page mode
+      _controller.pagesPerViewport = 1;
       _isInitialized = _controller.isInitialized;
     } else {
       _controller = MushafReaderController(initialPage: widget.initialPage);

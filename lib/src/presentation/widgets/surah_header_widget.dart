@@ -89,10 +89,14 @@ class SurahHeaderWidget extends StatefulWidget {
   /// Receives the Surah number (1-114).
   final void Function(int surahNumber)? onLongPress;
 
+  /// Optional custom image asset path for the header banner.
+  ///
+  /// If provided, this image will be used instead of the default mainframe.png.
+  final String? customHeaderImage;
+
   /// Optional repository for testing.
   final IQuranRepository? repository;
 
-  /// Creates a SurahHeaderWidget with surah data.
   const SurahHeaderWidget({
     super.key,
     required SurahModel surahData,
@@ -103,13 +107,11 @@ class SurahHeaderWidget extends StatefulWidget {
     this.width = 500,
     this.onTap,
     this.onLongPress,
+    this.customHeaderImage,
     this.repository,
   }) : _surahData = surahData,
        _surahNumber = null;
 
-  /// Creates a SurahHeaderWidget that loads surah data asynchronously.
-  ///
-  /// The widget will show only the SVG banner while loading.
   const SurahHeaderWidget.fromSurahNumber(
     int surahNumber, {
     super.key,
@@ -120,6 +122,7 @@ class SurahHeaderWidget extends StatefulWidget {
     this.width = 500,
     this.onTap,
     this.onLongPress,
+    this.customHeaderImage,
     this.repository,
   }) : _surahData = null,
        _surahNumber = surahNumber;
@@ -148,16 +151,17 @@ class _SurahHeaderWidgetState extends State<SurahHeaderWidget> {
   }
 
   void _loadFuture() {
-    _future = (widget.repository ?? HiveQuranRepository())
-        .getSurah(widget._surahNumber!);
+    _future = (widget.repository ?? HiveQuranRepository()).getSurah(
+      widget._surahNumber!,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Use PNG mainframe image for surah header banner
+    // Use custom header image if provided, otherwise use default
     final bannerImage = Image.asset(
-      'assets/images/mainframe.png',
-      package: 'mushaf_reader',
+      widget.customHeaderImage ?? 'assets/images/mainframe.png',
+      package: widget.customHeaderImage == null ? 'mushaf_reader' : null,
       width: widget.width,
       fit: BoxFit.contain,
     );

@@ -111,13 +111,14 @@ class _MushafTwoPageReaderState extends State<MushafTwoPageReader> {
           // Index 0 -> Pages 1, 2
           final firstPage = index * 2 + 1;
           final secondPage = firstPage + 1;
-    
+
           return Row(
             children: [
               // Right Page (Odd in RTL, Left in LTR)
               Expanded(
                 child: MushafPage(
                   page: firstPage,
+                  controller: _controller,
                   style: widget.style,
                   loadingWidget: widget.pageLoadingWidget,
                   hideHeader: widget.hideHeader,
@@ -130,12 +131,13 @@ class _MushafTwoPageReaderState extends State<MushafTwoPageReader> {
                 ),
               ),
               // Separator? (Book spine?)
-              
+
               // Left Page (Even in RTL, Right in LTR)
               Expanded(
                 child: secondPage <= 604
                     ? MushafPage(
                         page: secondPage,
+                        controller: _controller,
                         style: widget.style,
                         loadingWidget: widget.pageLoadingWidget,
                         hideHeader: widget.hideHeader,
@@ -169,13 +171,8 @@ class _MushafTwoPageReaderState extends State<MushafTwoPageReader> {
     super.initState();
     if (widget.controller != null) {
       _controller = widget.controller!;
-      if (_controller.pagesPerViewport != 2) {
-        // Warn or error? 
-        // Ideally we should warn, but let's assume the user knows.
-        // Actually, if the controller was created with 1 page, our viewport mapping fails.
-        // But we can't change it. 
-        // We'll proceed.
-      }
+      // Ensure controller is configured for 2-page mode
+      _controller.pagesPerViewport = 2;
       _isInitialized = _controller.isInitialized;
     } else {
       _controller = MushafReaderController(
