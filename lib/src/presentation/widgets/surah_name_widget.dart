@@ -133,8 +133,9 @@ class _SurahNameWidgetState extends State<SurahNameWidget> {
   }
 
   void _loadFuture() {
-    _future = (widget.repository ?? HiveQuranRepository())
-        .getSurah(widget._surahNumber!);
+    _future = (widget.repository ?? HiveQuranRepository()).getSurah(
+      widget._surahNumber!,
+    );
   }
 
   @override
@@ -162,7 +163,8 @@ class _SurahNameWidgetState extends State<SurahNameWidget> {
     final effectiveStyle = MushafTextStyleMerger.mergeBasmalahStyle(
       userStyle: widget.textStyle,
       modifier: widget.styleModifier,
-      baseSize: widget.fontSize ??
+      baseSize:
+          widget.fontSize ??
           widget.textStyle?.fontSize ??
           MushafBaseFontSizes.basmalah,
       scaleFactor: 1.0,

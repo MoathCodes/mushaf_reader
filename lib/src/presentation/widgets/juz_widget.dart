@@ -129,7 +129,9 @@ class _JuzWidgetState extends State<JuzWidget> {
   }
 
   void _loadFuture() {
-    _future = (widget.repository ?? HiveQuranRepository()).getJuz(widget.number);
+    _future = (widget.repository ?? HiveQuranRepository()).getJuz(
+      widget.number,
+    );
   }
 
   @override

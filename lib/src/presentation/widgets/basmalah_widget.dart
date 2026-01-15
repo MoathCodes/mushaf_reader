@@ -102,10 +102,9 @@ class _BasmalahWidgetState extends State<BasmalahWidget> {
   }
 
   void _loadFuture() {
-    _future =
-        (widget.repository ?? HiveQuranRepository()).getBasmalah().then(
-              (value) => value,
-            ); // getBasmalah returns String, we want String? for FutureBuilder logic consistency
+    _future = (widget.repository ?? HiveQuranRepository()).getBasmalah().then(
+      (value) => value,
+    ); // getBasmalah returns String, we want String? for FutureBuilder logic consistency
   }
 
   @override
@@ -138,7 +137,8 @@ class _BasmalahWidgetState extends State<BasmalahWidget> {
     final effectiveStyle = MushafTextStyleMerger.mergeBasmalahStyle(
       userStyle: widget.textStyle,
       modifier: widget.styleModifier,
-      baseSize: widget.fontSize ??
+      baseSize:
+          widget.fontSize ??
           widget.textStyle?.fontSize ??
           MushafBaseFontSizes.basmalah,
       scaleFactor: 1.0,

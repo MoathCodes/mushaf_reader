@@ -16,12 +16,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.rtl,
         child: MaterialApp(
-          home: Scaffold(
-            body: MushafPage(
-              page: 1,
-              controller: controller,
-            ),
-          ),
+          home: Scaffold(body: MushafPage(page: 1, controller: controller)),
         ),
       ),
     );
@@ -34,7 +29,7 @@ void main() {
 
     // Should show content
     expect(find.byType(CircularProgressIndicator), findsNothing);
-    
+
     expect(find.byType(PageAyahWidget), findsOneWidget);
     expect(find.byType(PageNumberWidget), findsOneWidget);
     expect(find.byType(JuzWidget), findsOneWidget);
