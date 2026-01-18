@@ -6,7 +6,7 @@ part 'mushaf_page_info.g.dart';
 /// Lightweight summary of a Mushaf page for quick access to current page state.
 ///
 /// This model provides synchronous access to commonly needed page metadata
-/// without requiring async database queries. It's computed from [QuranPageModel]
+/// without requiring async database queries. It's computed from [QuranPage]
 /// and cached by [MushafReaderController].
 ///
 /// ## Example
@@ -23,7 +23,7 @@ part 'mushaf_page_info.g.dart';
 /// ```
 ///
 /// See also:
-/// - [QuranPageModel], the full page model with glyph text
+/// - [QuranPage], the full page model with glyph text
 /// - [MushafReaderController], which provides this via [currentPageInfo]
 @freezed
 abstract class MushafPageInfo with _$MushafPageInfo {

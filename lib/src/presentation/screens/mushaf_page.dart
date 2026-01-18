@@ -66,7 +66,7 @@ import 'package:mushaf_reader/src/presentation/widgets/page_ayah_widget.dart';
 /// ```dart
 /// MushafReader(
 ///   controller: controller,
-///   onTapAyah: (ayahInfo) => print('Tapped: ${ayahInfo.reference}'),
+///   onTapAyah: (Ayah) => print('Tapped: ${Ayah.reference}'),
 /// )
 /// ```
 ///

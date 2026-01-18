@@ -277,12 +277,12 @@ Future<void> _generateJuzsBox(
     final codeV4 = j['code_v4'] as String?;
     final glyph = codeV4 != null ? codePointToChar(codeV4) : '';
 
-    final firstAyahInfo = juzFirstAyah[number];
+    final firstAyah = juzFirstAyah[number];
     final juz = Juz(
       number: number,
       glyph: glyph,
-      startPage: firstAyahInfo?['page'],
-      startAyahId: firstAyahInfo?['ayahId'],
+      startPage: firstAyah?['page'],
+      startAyahId: firstAyah?['ayahId'],
     );
     await box.put(number, juz);
   }
