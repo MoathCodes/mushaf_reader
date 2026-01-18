@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'juz_model.dart';
+part of 'juz.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'juz_model.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$JuzModel {
+mixin _$Juz {
 
 /// The Juz number (1-30).
 ///
@@ -28,17 +28,17 @@ mixin _$JuzModel {
 ///
 /// This is the ID of the first Ayah in the Juz.
  int? get startAyahId;
-/// Create a copy of JuzModel
+/// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$JuzModelCopyWith<JuzModel> get copyWith => _$JuzModelCopyWithImpl<JuzModel>(this as JuzModel, _$identity);
+$JuzCopyWith<Juz> get copyWith => _$JuzCopyWithImpl<Juz>(this as Juz, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
 }
 
 
@@ -47,15 +47,15 @@ int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId);
 
 @override
 String toString() {
-  return 'JuzModel(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
+  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $JuzModelCopyWith<$Res>  {
-  factory $JuzModelCopyWith(JuzModel value, $Res Function(JuzModel) _then) = _$JuzModelCopyWithImpl;
+abstract mixin class $JuzCopyWith<$Res>  {
+  factory $JuzCopyWith(Juz value, $Res Function(Juz) _then) = _$JuzCopyWithImpl;
 @useResult
 $Res call({
  int number, String glyph, int? startPage, int? startAyahId
@@ -66,14 +66,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$JuzModelCopyWithImpl<$Res>
-    implements $JuzModelCopyWith<$Res> {
-  _$JuzModelCopyWithImpl(this._self, this._then);
+class _$JuzCopyWithImpl<$Res>
+    implements $JuzCopyWith<$Res> {
+  _$JuzCopyWithImpl(this._self, this._then);
 
-  final JuzModel _self;
-  final $Res Function(JuzModel) _then;
+  final Juz _self;
+  final $Res Function(Juz) _then;
 
-/// Create a copy of JuzModel
+/// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,}) {
   return _then(_self.copyWith(
@@ -88,8 +88,8 @@ as int?,
 }
 
 
-/// Adds pattern-matching-related methods to [JuzModel].
-extension JuzModelPatterns on JuzModel {
+/// Adds pattern-matching-related methods to [Juz].
+extension JuzPatterns on Juz {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -102,10 +102,10 @@ extension JuzModelPatterns on JuzModel {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _JuzModel value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Juz value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _JuzModel() when $default != null:
+case _Juz() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -124,10 +124,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _JuzModel value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Juz value)  $default,){
 final _that = this;
 switch (_that) {
-case _JuzModel():
+case _Juz():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -145,10 +145,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _JuzModel value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Juz value)?  $default,){
 final _that = this;
 switch (_that) {
-case _JuzModel() when $default != null:
+case _Juz() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -168,7 +168,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _JuzModel() when $default != null:
+case _Juz() when $default != null:
 return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   return orElse();
 
@@ -189,7 +189,7 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId)  $default,) {final _that = this;
 switch (_that) {
-case _JuzModel():
+case _Juz():
 return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   throw StateError('Unexpected subclass');
 
@@ -209,7 +209,7 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  int? startPage,  int? startAyahId)?  $default,) {final _that = this;
 switch (_that) {
-case _JuzModel() when $default != null:
+case _Juz() when $default != null:
 return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case _:
   return null;
 
@@ -221,8 +221,8 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId);case
 /// @nodoc
 
 
-class _JuzModel extends JuzModel {
-   _JuzModel({required this.number, required this.glyph, this.startPage, this.startAyahId}): super._();
+class _Juz extends Juz {
+   _Juz({required this.number, required this.glyph, this.startPage, this.startAyahId}): super._();
   
 
 /// The Juz number (1-30).
@@ -243,17 +243,17 @@ class _JuzModel extends JuzModel {
 /// This is the ID of the first Ayah in the Juz.
 @override final  int? startAyahId;
 
-/// Create a copy of JuzModel
+/// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$JuzModelCopyWith<_JuzModel> get copyWith => __$JuzModelCopyWithImpl<_JuzModel>(this, _$identity);
+_$JuzCopyWith<_Juz> get copyWith => __$JuzCopyWithImpl<_Juz>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _JuzModel&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId));
 }
 
 
@@ -262,15 +262,15 @@ int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId);
 
 @override
 String toString() {
-  return 'JuzModel(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
+  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$JuzModelCopyWith<$Res> implements $JuzModelCopyWith<$Res> {
-  factory _$JuzModelCopyWith(_JuzModel value, $Res Function(_JuzModel) _then) = __$JuzModelCopyWithImpl;
+abstract mixin class _$JuzCopyWith<$Res> implements $JuzCopyWith<$Res> {
+  factory _$JuzCopyWith(_Juz value, $Res Function(_Juz) _then) = __$JuzCopyWithImpl;
 @override @useResult
 $Res call({
  int number, String glyph, int? startPage, int? startAyahId
@@ -281,17 +281,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$JuzModelCopyWithImpl<$Res>
-    implements _$JuzModelCopyWith<$Res> {
-  __$JuzModelCopyWithImpl(this._self, this._then);
+class __$JuzCopyWithImpl<$Res>
+    implements _$JuzCopyWith<$Res> {
+  __$JuzCopyWithImpl(this._self, this._then);
 
-  final _JuzModel _self;
-  final $Res Function(_JuzModel) _then;
+  final _Juz _self;
+  final $Res Function(_Juz) _then;
 
-/// Create a copy of JuzModel
+/// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,}) {
-  return _then(_JuzModel(
+  return _then(_Juz(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
 as String,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable

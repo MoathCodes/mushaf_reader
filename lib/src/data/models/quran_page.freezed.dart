@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'quran_page_model.dart';
+part of 'quran_page.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'quran_page_model.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$QuranPageModel {
+mixin _$QuranPage {
 
 /// The page number in the Mushaf (1-604).
 ///
@@ -26,12 +26,12 @@ mixin _$QuranPageModel {
 /// `MushafFonts.forPage(pageNumber)`.
  String get glyphText;/// Line-by-line layout information for the page.
 ///
-/// Each [LineModel] contains:
+/// Each [PageLine] contains:
 /// - Character start/end indices into [glyphText]
 /// - Ayah fragments that appear on that line
 ///
 /// Lines are ordered from top to bottom of the page.
- List<LineModel> get lines;/// Surah blocks present on this page.
+ List<PageLine> get lines;/// Surah blocks present on this page.
 ///
 /// A page may contain one or more Surahs. Each [SurahBlock] contains:
 /// - Surah identification and header glyph
@@ -44,17 +44,17 @@ mixin _$QuranPageModel {
 /// Determined by the first Ayah on the page. Note that Juz boundaries
 /// may occur mid-page, but this represents the primary Juz.
  int get juzNumber;
-/// Create a copy of QuranPageModel
+/// Create a copy of QuranPage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$QuranPageModelCopyWith<QuranPageModel> get copyWith => _$QuranPageModelCopyWithImpl<QuranPageModel>(this as QuranPageModel, _$identity);
+$QuranPageCopyWith<QuranPage> get copyWith => _$QuranPageCopyWithImpl<QuranPage>(this as QuranPage, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuranPageModel&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other.lines, lines)&&const DeepCollectionEquality().equals(other.surahs, surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuranPage&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other.lines, lines)&&const DeepCollectionEquality().equals(other.surahs, surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
 }
 
 
@@ -63,18 +63,18 @@ int get hashCode => Object.hash(runtimeType,pageNumber,glyphText,const DeepColle
 
 @override
 String toString() {
-  return 'QuranPageModel(pageNumber: $pageNumber, glyphText: $glyphText, lines: $lines, surahs: $surahs, juzNumber: $juzNumber)';
+  return 'QuranPage(pageNumber: $pageNumber, glyphText: $glyphText, lines: $lines, surahs: $surahs, juzNumber: $juzNumber)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $QuranPageModelCopyWith<$Res>  {
-  factory $QuranPageModelCopyWith(QuranPageModel value, $Res Function(QuranPageModel) _then) = _$QuranPageModelCopyWithImpl;
+abstract mixin class $QuranPageCopyWith<$Res>  {
+  factory $QuranPageCopyWith(QuranPage value, $Res Function(QuranPage) _then) = _$QuranPageCopyWithImpl;
 @useResult
 $Res call({
- int pageNumber, String glyphText, List<LineModel> lines, List<SurahBlock> surahs, int juzNumber
+ int pageNumber, String glyphText, List<PageLine> lines, List<SurahBlock> surahs, int juzNumber
 });
 
 
@@ -82,21 +82,21 @@ $Res call({
 
 }
 /// @nodoc
-class _$QuranPageModelCopyWithImpl<$Res>
-    implements $QuranPageModelCopyWith<$Res> {
-  _$QuranPageModelCopyWithImpl(this._self, this._then);
+class _$QuranPageCopyWithImpl<$Res>
+    implements $QuranPageCopyWith<$Res> {
+  _$QuranPageCopyWithImpl(this._self, this._then);
 
-  final QuranPageModel _self;
-  final $Res Function(QuranPageModel) _then;
+  final QuranPage _self;
+  final $Res Function(QuranPage) _then;
 
-/// Create a copy of QuranPageModel
+/// Create a copy of QuranPage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? pageNumber = null,Object? glyphText = null,Object? lines = null,Object? surahs = null,Object? juzNumber = null,}) {
   return _then(_self.copyWith(
 pageNumber: null == pageNumber ? _self.pageNumber : pageNumber // ignore: cast_nullable_to_non_nullable
 as int,glyphText: null == glyphText ? _self.glyphText : glyphText // ignore: cast_nullable_to_non_nullable
 as String,lines: null == lines ? _self.lines : lines // ignore: cast_nullable_to_non_nullable
-as List<LineModel>,surahs: null == surahs ? _self.surahs : surahs // ignore: cast_nullable_to_non_nullable
+as List<PageLine>,surahs: null == surahs ? _self.surahs : surahs // ignore: cast_nullable_to_non_nullable
 as List<SurahBlock>,juzNumber: null == juzNumber ? _self.juzNumber : juzNumber // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -105,8 +105,8 @@ as int,
 }
 
 
-/// Adds pattern-matching-related methods to [QuranPageModel].
-extension QuranPageModelPatterns on QuranPageModel {
+/// Adds pattern-matching-related methods to [QuranPage].
+extension QuranPagePatterns on QuranPage {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -119,10 +119,10 @@ extension QuranPageModelPatterns on QuranPageModel {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuranPageModel value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuranPage value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _QuranPageModel() when $default != null:
+case _QuranPage() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -141,10 +141,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuranPageModel value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuranPage value)  $default,){
 final _that = this;
 switch (_that) {
-case _QuranPageModel():
+case _QuranPage():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -162,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuranPageModel value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuranPage value)?  $default,){
 final _that = this;
 switch (_that) {
-case _QuranPageModel() when $default != null:
+case _QuranPage() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -183,9 +183,9 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int pageNumber,  String glyphText,  List<LineModel> lines,  List<SurahBlock> surahs,  int juzNumber)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int pageNumber,  String glyphText,  List<PageLine> lines,  List<SurahBlock> surahs,  int juzNumber)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _QuranPageModel() when $default != null:
+case _QuranPage() when $default != null:
 return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.juzNumber);case _:
   return orElse();
 
@@ -204,9 +204,9 @@ return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int pageNumber,  String glyphText,  List<LineModel> lines,  List<SurahBlock> surahs,  int juzNumber)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int pageNumber,  String glyphText,  List<PageLine> lines,  List<SurahBlock> surahs,  int juzNumber)  $default,) {final _that = this;
 switch (_that) {
-case _QuranPageModel():
+case _QuranPage():
 return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.juzNumber);case _:
   throw StateError('Unexpected subclass');
 
@@ -224,9 +224,9 @@ return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int pageNumber,  String glyphText,  List<LineModel> lines,  List<SurahBlock> surahs,  int juzNumber)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int pageNumber,  String glyphText,  List<PageLine> lines,  List<SurahBlock> surahs,  int juzNumber)?  $default,) {final _that = this;
 switch (_that) {
-case _QuranPageModel() when $default != null:
+case _QuranPage() when $default != null:
 return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.juzNumber);case _:
   return null;
 
@@ -238,8 +238,8 @@ return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.
 /// @nodoc
 
 
-class _QuranPageModel implements QuranPageModel {
-   _QuranPageModel({required this.pageNumber, required this.glyphText, required final  List<LineModel> lines, required final  List<SurahBlock> surahs, required this.juzNumber}): _lines = lines,_surahs = surahs;
+class _QuranPage implements QuranPage {
+   _QuranPage({required this.pageNumber, required this.glyphText, required final  List<PageLine> lines, required final  List<SurahBlock> surahs, required this.juzNumber}): _lines = lines,_surahs = surahs;
   
 
 /// The page number in the Mushaf (1-604).
@@ -256,20 +256,20 @@ class _QuranPageModel implements QuranPageModel {
 @override final  String glyphText;
 /// Line-by-line layout information for the page.
 ///
-/// Each [LineModel] contains:
+/// Each [PageLine] contains:
 /// - Character start/end indices into [glyphText]
 /// - Ayah fragments that appear on that line
 ///
 /// Lines are ordered from top to bottom of the page.
- final  List<LineModel> _lines;
+ final  List<PageLine> _lines;
 /// Line-by-line layout information for the page.
 ///
-/// Each [LineModel] contains:
+/// Each [PageLine] contains:
 /// - Character start/end indices into [glyphText]
 /// - Ayah fragments that appear on that line
 ///
 /// Lines are ordered from top to bottom of the page.
-@override List<LineModel> get lines {
+@override List<PageLine> get lines {
   if (_lines is EqualUnmodifiableListView) return _lines;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_lines);
@@ -304,17 +304,17 @@ class _QuranPageModel implements QuranPageModel {
 /// may occur mid-page, but this represents the primary Juz.
 @override final  int juzNumber;
 
-/// Create a copy of QuranPageModel
+/// Create a copy of QuranPage
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$QuranPageModelCopyWith<_QuranPageModel> get copyWith => __$QuranPageModelCopyWithImpl<_QuranPageModel>(this, _$identity);
+_$QuranPageCopyWith<_QuranPage> get copyWith => __$QuranPageCopyWithImpl<_QuranPage>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuranPageModel&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other._lines, _lines)&&const DeepCollectionEquality().equals(other._surahs, _surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuranPage&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other._lines, _lines)&&const DeepCollectionEquality().equals(other._surahs, _surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
 }
 
 
@@ -323,18 +323,18 @@ int get hashCode => Object.hash(runtimeType,pageNumber,glyphText,const DeepColle
 
 @override
 String toString() {
-  return 'QuranPageModel(pageNumber: $pageNumber, glyphText: $glyphText, lines: $lines, surahs: $surahs, juzNumber: $juzNumber)';
+  return 'QuranPage(pageNumber: $pageNumber, glyphText: $glyphText, lines: $lines, surahs: $surahs, juzNumber: $juzNumber)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$QuranPageModelCopyWith<$Res> implements $QuranPageModelCopyWith<$Res> {
-  factory _$QuranPageModelCopyWith(_QuranPageModel value, $Res Function(_QuranPageModel) _then) = __$QuranPageModelCopyWithImpl;
+abstract mixin class _$QuranPageCopyWith<$Res> implements $QuranPageCopyWith<$Res> {
+  factory _$QuranPageCopyWith(_QuranPage value, $Res Function(_QuranPage) _then) = __$QuranPageCopyWithImpl;
 @override @useResult
 $Res call({
- int pageNumber, String glyphText, List<LineModel> lines, List<SurahBlock> surahs, int juzNumber
+ int pageNumber, String glyphText, List<PageLine> lines, List<SurahBlock> surahs, int juzNumber
 });
 
 
@@ -342,21 +342,21 @@ $Res call({
 
 }
 /// @nodoc
-class __$QuranPageModelCopyWithImpl<$Res>
-    implements _$QuranPageModelCopyWith<$Res> {
-  __$QuranPageModelCopyWithImpl(this._self, this._then);
+class __$QuranPageCopyWithImpl<$Res>
+    implements _$QuranPageCopyWith<$Res> {
+  __$QuranPageCopyWithImpl(this._self, this._then);
 
-  final _QuranPageModel _self;
-  final $Res Function(_QuranPageModel) _then;
+  final _QuranPage _self;
+  final $Res Function(_QuranPage) _then;
 
-/// Create a copy of QuranPageModel
+/// Create a copy of QuranPage
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? pageNumber = null,Object? glyphText = null,Object? lines = null,Object? surahs = null,Object? juzNumber = null,}) {
-  return _then(_QuranPageModel(
+  return _then(_QuranPage(
 pageNumber: null == pageNumber ? _self.pageNumber : pageNumber // ignore: cast_nullable_to_non_nullable
 as int,glyphText: null == glyphText ? _self.glyphText : glyphText // ignore: cast_nullable_to_non_nullable
 as String,lines: null == lines ? _self._lines : lines // ignore: cast_nullable_to_non_nullable
-as List<LineModel>,surahs: null == surahs ? _self._surahs : surahs // ignore: cast_nullable_to_non_nullable
+as List<PageLine>,surahs: null == surahs ? _self._surahs : surahs // ignore: cast_nullable_to_non_nullable
 as List<SurahBlock>,juzNumber: null == juzNumber ? _self.juzNumber : juzNumber // ignore: cast_nullable_to_non_nullable
 as int,
   ));

@@ -6,21 +6,21 @@ part of 'hive_adapters.dart';
 // AdaptersGenerator
 // **************************************************************************
 
-class AyahModelAdapter extends TypeAdapter<AyahModel> {
+class AyahAdapter extends TypeAdapter<Ayah> {
   @override
   final typeId = 379;
 
   @override
-  AyahModel read(BinaryReader reader) {
+  Ayah read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AyahModel(
-      id: (fields[0] as num).toInt(),
+    return Ayah(
+      ayahId: (fields[0] as num).toInt(),
       juz: (fields[1] as num).toInt(),
       page: (fields[2] as num).toInt(),
-      surah: (fields[3] as num).toInt(),
+      surahNumber: (fields[3] as num).toInt(),
       numberInSurah: (fields[4] as num).toInt(),
       text: fields[5] as String,
       textPlain: fields[6] as String?,
@@ -33,17 +33,17 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
   }
 
   @override
-  void write(BinaryWriter writer, AyahModel obj) {
+  void write(BinaryWriter writer, Ayah obj) {
     writer
       ..writeByte(12)
       ..writeByte(0)
-      ..write(obj.id)
+      ..write(obj.ayahId)
       ..writeByte(1)
       ..write(obj.juz)
       ..writeByte(2)
       ..write(obj.page)
       ..writeByte(3)
-      ..write(obj.surah)
+      ..write(obj.surahNumber)
       ..writeByte(4)
       ..write(obj.numberInSurah)
       ..writeByte(5)
@@ -68,7 +68,7 @@ class AyahModelAdapter extends TypeAdapter<AyahModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AyahModelAdapter &&
+      other is AyahAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -116,17 +116,17 @@ class PageLayoutsAdapter extends TypeAdapter<PageLayouts> {
           typeId == other.typeId;
 }
 
-class JuzModelAdapter extends TypeAdapter<JuzModel> {
+class JuzAdapter extends TypeAdapter<Juz> {
   @override
   final typeId = 381;
 
   @override
-  JuzModel read(BinaryReader reader) {
+  Juz read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return JuzModel(
+    return Juz(
       number: (fields[0] as num).toInt(),
       glyph: fields[1] as String,
       startPage: (fields[2] as num?)?.toInt(),
@@ -135,7 +135,7 @@ class JuzModelAdapter extends TypeAdapter<JuzModel> {
   }
 
   @override
-  void write(BinaryWriter writer, JuzModel obj) {
+  void write(BinaryWriter writer, Juz obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
@@ -154,22 +154,22 @@ class JuzModelAdapter extends TypeAdapter<JuzModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is JuzModelAdapter &&
+      other is JuzAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
 
-class SurahModelAdapter extends TypeAdapter<SurahModel> {
+class SurahAdapter extends TypeAdapter<Surah> {
   @override
   final typeId = 382;
 
   @override
-  SurahModel read(BinaryReader reader) {
+  Surah read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return SurahModel(
+    return Surah(
       number: (fields[0] as num).toInt(),
       glyph: fields[1] as String,
       hasBasmalah: fields[2] as bool,
@@ -183,7 +183,7 @@ class SurahModelAdapter extends TypeAdapter<SurahModel> {
   }
 
   @override
-  void write(BinaryWriter writer, SurahModel obj) {
+  void write(BinaryWriter writer, Surah obj) {
     writer
       ..writeByte(9)
       ..writeByte(0)
@@ -212,7 +212,7 @@ class SurahModelAdapter extends TypeAdapter<SurahModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SurahModelAdapter &&
+      other is SurahAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

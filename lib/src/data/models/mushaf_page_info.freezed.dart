@@ -11,6 +11,7 @@ part of 'mushaf_page_info.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$MushafPageInfo {
 
@@ -33,6 +34,8 @@ mixin _$MushafPageInfo {
 @pragma('vm:prefer-inline')
 $MushafPageInfoCopyWith<MushafPageInfo> get copyWith => _$MushafPageInfoCopyWithImpl<MushafPageInfo>(this as MushafPageInfo, _$identity);
 
+  /// Serializes this MushafPageInfo to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -40,7 +43,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is MushafPageInfo&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber)&&const DeepCollectionEquality().equals(other.surahNumbers, surahNumbers)&&const DeepCollectionEquality().equals(other.surahNames, surahNames)&&(identical(other.firstAyahId, firstAyahId) || other.firstAyahId == firstAyahId)&&(identical(other.lastAyahId, lastAyahId) || other.lastAyahId == lastAyahId)&&const DeepCollectionEquality().equals(other.ayahIds, ayahIds));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,pageNumber,juzNumber,const DeepCollectionEquality().hash(surahNumbers),const DeepCollectionEquality().hash(surahNames),firstAyahId,lastAyahId,const DeepCollectionEquality().hash(ayahIds));
 
@@ -221,11 +224,11 @@ return $default(_that.pageNumber,_that.juzNumber,_that.surahNumbers,_that.surahN
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _MushafPageInfo extends MushafPageInfo {
    _MushafPageInfo({required this.pageNumber, required this.juzNumber, required final  List<int> surahNumbers, required final  List<String> surahNames, required this.firstAyahId, required this.lastAyahId, required final  List<int> ayahIds}): _surahNumbers = surahNumbers,_surahNames = surahNames,_ayahIds = ayahIds,super._();
-  
+  factory _MushafPageInfo.fromJson(Map<String, dynamic> json) => _$MushafPageInfoFromJson(json);
 
 /// The page number in the Mushaf (1-604).
 @override final  int pageNumber;
@@ -279,14 +282,17 @@ class _MushafPageInfo extends MushafPageInfo {
 @pragma('vm:prefer-inline')
 _$MushafPageInfoCopyWith<_MushafPageInfo> get copyWith => __$MushafPageInfoCopyWithImpl<_MushafPageInfo>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$MushafPageInfoToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _MushafPageInfo&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber)&&const DeepCollectionEquality().equals(other._surahNumbers, _surahNumbers)&&const DeepCollectionEquality().equals(other._surahNames, _surahNames)&&(identical(other.firstAyahId, firstAyahId) || other.firstAyahId == firstAyahId)&&(identical(other.lastAyahId, lastAyahId) || other.lastAyahId == lastAyahId)&&const DeepCollectionEquality().equals(other._ayahIds, _ayahIds));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode => Object.hash(runtimeType,pageNumber,juzNumber,const DeepCollectionEquality().hash(_surahNumbers),const DeepCollectionEquality().hash(_surahNames),firstAyahId,lastAyahId,const DeepCollectionEquality().hash(_ayahIds));
 
