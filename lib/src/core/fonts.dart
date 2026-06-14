@@ -41,6 +41,9 @@ class MushafBaseFontSizes {
 /// achieved with standard Unicode text rendering. Each page font
 /// contains pre-positioned glyphs that replicate the original print layout.
 ///
+/// QCF4 font files are proprietary freeware from the King Fahd Complex —
+/// not covered by the package MIT license. See README for details.
+///
 /// ## Usage
 ///
 /// ```dart
@@ -104,6 +107,13 @@ class MushafFonts {
   ///
   /// [pageNumber] must be between 1 and 604 inclusive.
   static String forPage(int pageNumber) {
+    if (pageNumber < 1 || pageNumber > 604) {
+      throw ArgumentError.value(
+        pageNumber,
+        'pageNumber',
+        'Must be between 1 and 604',
+      );
+    }
     final paddedPage = pageNumber.toString().padLeft(3, '0');
     return 'QCF4_$paddedPage';
   }
@@ -215,11 +225,17 @@ class MushafTextStyleMerger {
       );
     }
 
-    // Apply modifier if provided, then re-enforce font settings
+    // Apply modifier; optional fontSize acts as a maximum cap on fitted size.
     if (modifier != null) {
-      result = modifier(
-        result,
-      ).copyWith(fontFamily: fontFamily, package: packageName);
+      final modified = modifier(result);
+      final maxFontSize = modified.fontSize;
+      result = modified.copyWith(
+        fontFamily: fontFamily,
+        package: packageName,
+        fontSize: maxFontSize != null
+            ? (maxFontSize < fontSize ? maxFontSize : fontSize)
+            : fontSize,
+      );
     }
 
     return result;

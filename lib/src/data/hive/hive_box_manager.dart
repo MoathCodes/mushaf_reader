@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -21,6 +22,9 @@ import 'package:path_provider/path_provider.dart';
 ///
 /// ## Usage
 ///
+/// Prefer initializing via [MushafReaderLibrary.ensureInitialized] so apps can
+/// pass a [subDirectory]. Direct use:
+///
 /// ```dart
 /// final manager = HiveBoxManager();
 /// await manager.init();
@@ -30,6 +34,9 @@ import 'package:path_provider/path_provider.dart';
 ///
 /// manager.dispose();
 /// ```
+///
+/// [subDirectory] is fixed on the first successful [init] call. Later calls with
+/// a different value throw [StateError].
 class HiveBoxManager {
   /// Singleton instance.
   static HiveBoxManager? _instance;
@@ -38,7 +45,13 @@ class HiveBoxManager {
   static int _refCount = 0;
 
   /// Completer to handle concurrent initialization requests.
+  Completer<void>? _initCompleter;
+
+  /// Whether [init] has completed successfully.
   bool _initialized = false;
+
+  /// [subDirectory] passed to the first successful [init], if any.
+  String? _configuredSubDirectory;
 
   /// The directory where Hive stores its boxes.
   late String _hivePath;
@@ -48,9 +61,22 @@ class HiveBoxManager {
 
   LazyBox<Ayah>? _ayahsBox;
 
+  Box<String>? _searchIndexBox;
+
+  Completer<Box<String>>? _searchIndexOpenCompleter;
+
   Box<Juz>? _juzsBox;
   Box<PageLayouts>? _pageLayoutsBox;
   Box<String>? _metadataBox;
+
+  /// Layout rows grouped by page number (built once at init).
+  final Map<int, List<PageLayouts>> _layoutsByPage = {};
+
+  /// Whether boxes have been opened via [init].
+  bool get isInitialized => _initialized;
+
+  /// [subDirectory] from the first successful [init], if any.
+  String? get configuredSubDirectory => _configuredSubDirectory;
 
   /// Factory constructor that returns the singleton instance.
   factory HiveBoxManager() {
@@ -65,6 +91,31 @@ class HiveBoxManager {
   LazyBox<Ayah> get ayahsBox {
     _ensureInitialized();
     return _ayahsBox!;
+  }
+
+  /// Opens the pre-normalized ayah search box (6236 entries keyed by ayah ID).
+  ///
+  /// Value format: `"surahNumber|normalizedText"`. Deferred until first search
+  /// or [ensureSearchIndexBoxOpen] so readers that never search pay no RAM cost.
+  Future<Box<String>> ensureSearchIndexBoxOpen() async {
+    _ensureInitialized();
+
+    if (_searchIndexBox != null) return _searchIndexBox!;
+    if (_searchIndexOpenCompleter != null) {
+      return _searchIndexOpenCompleter!.future;
+    }
+
+    _searchIndexOpenCompleter = Completer<Box<String>>();
+
+    try {
+      _searchIndexBox = await Hive.openBox<String>('search_index');
+      _searchIndexOpenCompleter!.complete(_searchIndexBox!);
+      return _searchIndexBox!;
+    } catch (e, st) {
+      _searchIndexOpenCompleter!.completeError(e, st);
+      _searchIndexOpenCompleter = null;
+      rethrow;
+    }
   }
 
   /// The juzs box (30 juzs keyed by number).
@@ -111,18 +162,13 @@ class HiveBoxManager {
   }
 
   /// Gets all PageLayouts for a specific page number.
+  ///
+  /// Uses an in-memory index built at [init] — O(1) per page instead of
+  /// scanning every key in the layouts box.
   List<PageLayouts> getLayoutsForPage(int page) {
     _ensureInitialized();
-    final prefix = '${page}_';
-    final layouts = <PageLayouts>[];
-    for (final key in _pageLayoutsBox!.keys) {
-      if (key.toString().startsWith(prefix)) {
-        final layout = _pageLayoutsBox!.get(key);
-        if (layout != null) {
-          layouts.add(layout);
-        }
-      }
-    }
+    final layouts = _layoutsByPage[page];
+    if (layouts == null || layouts.isEmpty) return const [];
     return layouts;
   }
 
@@ -131,46 +177,109 @@ class HiveBoxManager {
   /// This copies the pre-populated boxes from assets on first run,
   /// registers adapters, and opens all required boxes.
   ///
-  /// Safe to call multiple times - subsequent calls return immediately.
-  Future<void> init() async {
-    if (_initialized) return;
+  /// [subDirectory] - Optional subdirectory within the app documents folder
+  /// where Hive boxes should be stored. If provided, boxes will be stored at
+  /// `documents/<subDirectory>/` instead of directly in `documents/`.
+  /// This is useful for organizing app data in an app-specific folder.
+  ///
+  /// [subDirectory] is only applied on the first successful init. Subsequent
+  /// calls must pass the same value (or both omit it) or a [StateError] is
+  /// thrown.
+  ///
+  /// Safe to call multiple times concurrently — all callers await the same
+  /// initialization future.
+  Future<void> init({String? subDirectory}) async {
+    if (_initialized) {
+      _assertMatchingSubDirectory(subDirectory);
+      return;
+    }
+    if (_initCompleter != null) {
+      _assertMatchingSubDirectory(subDirectory);
+      return _initCompleter!.future;
+    }
 
-    // Initialize Hive with Flutter's application documents directory
-    final appDir = await getApplicationDocumentsDirectory();
-    _hivePath = appDir.path;
-    Hive.init(_hivePath);
+    _assertMatchingSubDirectory(subDirectory);
+    _configuredSubDirectory = subDirectory;
+    _initCompleter = Completer<void>();
 
-    // Register all adapters
-    Hive.registerAdapters();
+    try {
+      // Initialize Hive with Flutter's application documents directory
+      final appDir = await getApplicationDocumentsDirectory();
+      _hivePath = subDirectory != null
+          ? p.join(appDir.path, subDirectory)
+          : appDir.path;
 
-    // Copy pre-populated boxes from assets if needed
-    await _copyBoxesFromAssets();
+      // Ensure the directory exists
+      await Directory(_hivePath).create(recursive: true);
 
-    // Open all boxes
-    _surahsBox = await Hive.openBox<Surah>('surahs');
-    _ayahsBox = await Hive.openLazyBox<Ayah>('ayahs');
-    _juzsBox = await Hive.openBox<Juz>('juzs');
-    _pageLayoutsBox = await Hive.openBox<PageLayouts>('pagelayouts');
-    _metadataBox = await Hive.openBox<String>('metadata');
+      Hive.init(_hivePath);
 
-    _initialized = true;
+      // Register all adapters
+      Hive.registerAdapters();
+
+      // Copy pre-populated boxes from assets if needed
+      await _copyBoxesFromAssets();
+
+      // Open core boxes (search_index opens on demand via [ensureSearchIndexBoxOpen])
+      _surahsBox = await Hive.openBox<Surah>('surahs');
+      _ayahsBox = await Hive.openLazyBox<Ayah>('ayahs');
+      _juzsBox = await Hive.openBox<Juz>('juzs');
+      _pageLayoutsBox = await Hive.openBox<PageLayouts>('pagelayouts');
+      _metadataBox = await Hive.openBox<String>('metadata');
+
+      _buildLayoutsByPageIndex();
+
+      _initialized = true;
+      _initCompleter!.complete();
+    } catch (e, st) {
+      _configuredSubDirectory = null;
+      _initCompleter!.completeError(e, st);
+      _initCompleter = null;
+      rethrow;
+    }
+  }
+
+  void _assertMatchingSubDirectory(String? subDirectory) {
+    if (!_initialized && _initCompleter == null) return;
+    if (subDirectory == _configuredSubDirectory) return;
+    throw StateError(
+      'HiveBoxManager already initialized with '
+      'subDirectory=${_configuredSubDirectory == null ? 'null' : '"$_configuredSubDirectory"'}; '
+      'cannot re-init with '
+      'subDirectory=${subDirectory == null ? 'null' : '"$subDirectory"'}',
+    );
+  }
+
+  void _buildLayoutsByPageIndex() {
+    _layoutsByPage.clear();
+    for (final key in _pageLayoutsBox!.keys) {
+      final layout = _pageLayoutsBox!.get(key);
+      if (layout == null) continue;
+      (_layoutsByPage[layout.page] ??= []).add(layout);
+    }
   }
 
   /// Internal method to close and reset.
   void _closeAndReset() {
     _surahsBox?.close();
     _ayahsBox?.close();
+    _searchIndexBox?.close();
     _juzsBox?.close();
     _pageLayoutsBox?.close();
     _metadataBox?.close();
 
     _surahsBox = null;
     _ayahsBox = null;
+    _searchIndexBox = null;
+    _searchIndexOpenCompleter = null;
     _juzsBox = null;
     _pageLayoutsBox = null;
     _metadataBox = null;
+    _layoutsByPage.clear();
 
     _initialized = false;
+    _configuredSubDirectory = null;
+    _initCompleter = null;
     _instance = null;
     _refCount = 0;
   }
@@ -184,7 +293,14 @@ class HiveBoxManager {
     // On web, we can't copy files - Hive CE uses IndexedDB
     if (kIsWeb) return;
 
-    const boxNames = ['surahs', 'ayahs', 'juzs', 'pagelayouts', 'metadata'];
+    const boxNames = [
+      'surahs',
+      'ayahs',
+      'search_index',
+      'juzs',
+      'pagelayouts',
+      'metadata',
+    ];
 
     // Load asset manifest (pre-computed MD5 hashes)
     Map<String, dynamic> assetManifest;
@@ -219,19 +335,21 @@ class HiveBoxManager {
     // Compare hashes and copy only changed boxes
     var needsUpdate = false;
     for (final name in boxNames) {
-      final assetHash = assetManifest['$name.hive'];
-      final localHash = localManifest['$name.hive'];
+      final hiveFile = '$name.hive';
+      final assetHash = assetManifest[hiveFile];
+      final localHash = localManifest[hiveFile];
 
-      if (assetHash != localHash) {
-        debugPrint('$name.hive changed, copying...');
-        await _copyBoxFromAssets(name);
-        needsUpdate = true;
-      }
+      if (assetHash == null) continue;
+      if (assetHash == localHash) continue;
+
+      debugPrint('$hiveFile changed, copying...');
+      await _copyBoxFromAssets(name);
+      localManifest[hiveFile] = assetHash;
+      needsUpdate = true;
     }
 
-    // Update local manifest if any boxes were copied
     if (needsUpdate || !localManifestFile.existsSync()) {
-      await localManifestFile.writeAsString(json.encode(assetManifest));
+      await localManifestFile.writeAsString(json.encode(localManifest));
     }
   }
 
@@ -248,14 +366,21 @@ class HiveBoxManager {
         data.lengthInBytes,
       );
       await destFile.writeAsBytes(assetBytes, flush: true);
-    } catch (e) {
-      debugPrint('Warning: Could not copy $boxName.hive: $e');
+    } catch (e, st) {
+      final message = 'Failed to copy $boxName.hive from assets: $e';
+      debugPrint('HiveBoxManager: $message');
+      if (kDebugMode) {
+        Error.throwWithStackTrace(StateError(message), st);
+      }
     }
   }
 
   void _ensureInitialized() {
     if (!_initialized) {
-      throw StateError('HiveBoxManager not initialized. Call init() first.');
+      throw StateError(
+        'HiveBoxManager not initialized. Call '
+        'MushafReaderLibrary.ensureInitialized() or init() first.',
+      );
     }
   }
 }
