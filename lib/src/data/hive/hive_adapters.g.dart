@@ -131,13 +131,14 @@ class JuzAdapter extends TypeAdapter<Juz> {
       glyph: fields[1] as String,
       startPage: (fields[2] as num?)?.toInt(),
       startAyahId: (fields[3] as num?)?.toInt(),
+      endAyahId: (fields[4] as num?)?.toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Juz obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
@@ -145,7 +146,9 @@ class JuzAdapter extends TypeAdapter<Juz> {
       ..writeByte(2)
       ..write(obj.startPage)
       ..writeByte(3)
-      ..write(obj.startAyahId);
+      ..write(obj.startAyahId)
+      ..writeByte(4)
+      ..write(obj.endAyahId);
   }
 
   @override
@@ -250,6 +253,58 @@ class RevelationTypeAdapter extends TypeAdapter<RevelationType> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is RevelationTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class HizbAdapter extends TypeAdapter<Hizb> {
+  @override
+  final typeId = 384;
+
+  @override
+  Hizb read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Hizb(
+      number: (fields[0] as num).toInt(),
+      startAyahId: (fields[1] as num?)?.toInt(),
+      endAyahId: (fields[2] as num?)?.toInt(),
+      startPage: (fields[3] as num?)?.toInt(),
+      startSurahNumber: (fields[4] as num?)?.toInt(),
+      startAyahInSurah: (fields[5] as num?)?.toInt(),
+      startHizbQuarter: (fields[6] as num?)?.toInt(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Hizb obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.number)
+      ..writeByte(1)
+      ..write(obj.startAyahId)
+      ..writeByte(2)
+      ..write(obj.endAyahId)
+      ..writeByte(3)
+      ..write(obj.startPage)
+      ..writeByte(4)
+      ..write(obj.startSurahNumber)
+      ..writeByte(5)
+      ..write(obj.startAyahInSurah)
+      ..writeByte(6)
+      ..write(obj.startHizbQuarter);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HizbAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

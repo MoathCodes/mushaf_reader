@@ -8,6 +8,7 @@ import 'package:mushaf_reader/src/data/hive/hive_adapters.dart';
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(AyahAdapter());
+    registerAdapter(HizbAdapter());
     registerAdapter(JuzAdapter());
     registerAdapter(PageLayoutsAdapter());
     registerAdapter(RevelationTypeAdapter());
@@ -18,6 +19,7 @@ extension HiveRegistrar on HiveInterface {
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(AyahAdapter());
+    registerAdapter(HizbAdapter());
     registerAdapter(JuzAdapter());
     registerAdapter(PageLayoutsAdapter());
     registerAdapter(RevelationTypeAdapter());

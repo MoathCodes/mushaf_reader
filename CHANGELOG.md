@@ -1,3 +1,20 @@
+## 0.3.0
+
+* Added `Juz.endAyahId` for authoritative juz boundary lookups; regenerate
+  `juzs.hive` after upgrading.
+* Added `Ayah.hizb` and `Ayah.quarterInHizb` getters derived from
+  `hizbQuarter`.
+* Added `Hizb` model, `hizbs.hive` (60 derived entries), and navigation APIs:
+  `getHizbs`, `getHizbSync`, `getHizbStartPage`, `jumpToHizb`, `juzAyahBounds`,
+  `hizbAyahBounds`. When `endAyahId` is missing on a stored juz or hizb,
+  bounds APIs derive the end from the next division's `startAyahId - 1` (or
+  ayah 6236 for the last division).
+* Split controller notifications into `MushafSelectionListenable` and
+  `MushafPageListenable` (`controller.selection` / `controller.page`) for
+  narrower rebuilds; `MushafPage` listens to selection directly.
+* Exported `SurahTiming` and `AyahTiming` JSON models for host-app recitation
+  timing (no bundled audio or player).
+
 ## 0.2.0
 
 * Surah header banners use offline-precompiled `.svg.vec` assets loaded via

@@ -16,14 +16,11 @@ mixin _$PageLayouts {
 
 /// The Mushaf page number (1-604).
  int get page;/// The global Ayah ID (1-6236).
- int get ayahId;/// The starting character index for this Ayah's text.
+ int get ayahId;/// The first mushaf line (1-based) on which this Ayah appears on [page].
 ///
-/// Used to determine where the Ayah begins in the concatenated
-/// page text for line grouping.
- int get lineStart;/// The ending character index for this Ayah's text.
-///
-/// Used to determine where the Ayah ends in the concatenated
-/// page text for line grouping.
+/// These are physical line numbers on the printed page, not character
+/// indices into concatenated glyph text.
+ int get lineStart;/// The last mushaf line (1-based) on which this Ayah appears on [page].
  int get lineEnd;
 /// Create a copy of PageLayouts
 /// with the given fields replaced by the non-null parameter values.
@@ -226,15 +223,12 @@ class _PageLayouts implements PageLayouts {
 @override final  int page;
 /// The global Ayah ID (1-6236).
 @override final  int ayahId;
-/// The starting character index for this Ayah's text.
+/// The first mushaf line (1-based) on which this Ayah appears on [page].
 ///
-/// Used to determine where the Ayah begins in the concatenated
-/// page text for line grouping.
+/// These are physical line numbers on the printed page, not character
+/// indices into concatenated glyph text.
 @override final  int lineStart;
-/// The ending character index for this Ayah's text.
-///
-/// Used to determine where the Ayah ends in the concatenated
-/// page text for line grouping.
+/// The last mushaf line (1-based) on which this Ayah appears on [page].
 @override final  int lineEnd;
 
 /// Create a copy of PageLayouts
