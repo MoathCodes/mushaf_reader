@@ -21,7 +21,8 @@ mixin _$Hizb {
  int? get startPage;/// Surah number of the first ayah in this Hizb (1–114).
  int? get startSurahNumber;/// Ayah number within [startSurahNumber] for the first ayah in this Hizb.
  int? get startAyahInSurah;/// The first [Ayah.hizbQuarter] value in this Hizb (= `(number - 1) * 4 + 1`).
- int? get startHizbQuarter;
+ int? get startHizbQuarter;/// Uthmanic Hafs text of the first ayah in this Hizb (from `quran.json`).
+ String? get startAyahUthmaniText;
 /// Create a copy of Hizb
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +33,16 @@ $HizbCopyWith<Hizb> get copyWith => _$HizbCopyWithImpl<Hizb>(this as Hizb, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Hizb&&(identical(other.number, number) || other.number == number)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah)&&(identical(other.startHizbQuarter, startHizbQuarter) || other.startHizbQuarter == startHizbQuarter));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Hizb&&(identical(other.number, number) || other.number == number)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah)&&(identical(other.startHizbQuarter, startHizbQuarter) || other.startHizbQuarter == startHizbQuarter)&&(identical(other.startAyahUthmaniText, startAyahUthmaniText) || other.startAyahUthmaniText == startAyahUthmaniText));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,startAyahId,endAyahId,startPage,startSurahNumber,startAyahInSurah,startHizbQuarter);
+int get hashCode => Object.hash(runtimeType,number,startAyahId,endAyahId,startPage,startSurahNumber,startAyahInSurah,startHizbQuarter,startAyahUthmaniText);
 
 @override
 String toString() {
-  return 'Hizb(number: $number, startAyahId: $startAyahId, endAyahId: $endAyahId, startPage: $startPage, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah, startHizbQuarter: $startHizbQuarter)';
+  return 'Hizb(number: $number, startAyahId: $startAyahId, endAyahId: $endAyahId, startPage: $startPage, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah, startHizbQuarter: $startHizbQuarter, startAyahUthmaniText: $startAyahUthmaniText)';
 }
 
 
@@ -52,7 +53,7 @@ abstract mixin class $HizbCopyWith<$Res>  {
   factory $HizbCopyWith(Hizb value, $Res Function(Hizb) _then) = _$HizbCopyWithImpl;
 @useResult
 $Res call({
- int number, int? startAyahId, int? endAyahId, int? startPage, int? startSurahNumber, int? startAyahInSurah, int? startHizbQuarter
+ int number, int? startAyahId, int? endAyahId, int? startPage, int? startSurahNumber, int? startAyahInSurah, int? startHizbQuarter, String? startAyahUthmaniText
 });
 
 
@@ -69,7 +70,7 @@ class _$HizbCopyWithImpl<$Res>
 
 /// Create a copy of Hizb
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startPage = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,Object? startHizbQuarter = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startPage = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,Object? startHizbQuarter = freezed,Object? startAyahUthmaniText = freezed,}) {
   return _then(_self.copyWith(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
@@ -78,7 +79,8 @@ as int?,startPage: freezed == startPage ? _self.startPage : startPage // ignore:
 as int?,startSurahNumber: freezed == startSurahNumber ? _self.startSurahNumber : startSurahNumber // ignore: cast_nullable_to_non_nullable
 as int?,startAyahInSurah: freezed == startAyahInSurah ? _self.startAyahInSurah : startAyahInSurah // ignore: cast_nullable_to_non_nullable
 as int?,startHizbQuarter: freezed == startHizbQuarter ? _self.startHizbQuarter : startHizbQuarter // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,startAyahUthmaniText: freezed == startAyahUthmaniText ? _self.startAyahUthmaniText : startAyahUthmaniText // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -163,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter,  String? startAyahUthmaniText)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Hizb() when $default != null:
-return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter);case _:
+return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter,_that.startAyahUthmaniText);case _:
   return orElse();
 
 }
@@ -184,10 +186,10 @@ return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter,  String? startAyahUthmaniText)  $default,) {final _that = this;
 switch (_that) {
 case _Hizb():
-return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter);case _:
+return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter,_that.startAyahUthmaniText);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +206,10 @@ return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  int? startAyahId,  int? endAyahId,  int? startPage,  int? startSurahNumber,  int? startAyahInSurah,  int? startHizbQuarter,  String? startAyahUthmaniText)?  $default,) {final _that = this;
 switch (_that) {
 case _Hizb() when $default != null:
-return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter);case _:
+return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_that.startSurahNumber,_that.startAyahInSurah,_that.startHizbQuarter,_that.startAyahUthmaniText);case _:
   return null;
 
 }
@@ -219,7 +221,7 @@ return $default(_that.number,_that.startAyahId,_that.endAyahId,_that.startPage,_
 
 
 class _Hizb extends Hizb {
-   _Hizb({required this.number, this.startAyahId, this.endAyahId, this.startPage, this.startSurahNumber, this.startAyahInSurah, this.startHizbQuarter}): super._();
+   _Hizb({required this.number, this.startAyahId, this.endAyahId, this.startPage, this.startSurahNumber, this.startAyahInSurah, this.startHizbQuarter, this.startAyahUthmaniText}): super._();
   
 
 /// The Hizb number (1–60).
@@ -236,6 +238,8 @@ class _Hizb extends Hizb {
 @override final  int? startAyahInSurah;
 /// The first [Ayah.hizbQuarter] value in this Hizb (= `(number - 1) * 4 + 1`).
 @override final  int? startHizbQuarter;
+/// Uthmanic Hafs text of the first ayah in this Hizb (from `quran.json`).
+@override final  String? startAyahUthmaniText;
 
 /// Create a copy of Hizb
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +251,16 @@ _$HizbCopyWith<_Hizb> get copyWith => __$HizbCopyWithImpl<_Hizb>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Hizb&&(identical(other.number, number) || other.number == number)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah)&&(identical(other.startHizbQuarter, startHizbQuarter) || other.startHizbQuarter == startHizbQuarter));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Hizb&&(identical(other.number, number) || other.number == number)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah)&&(identical(other.startHizbQuarter, startHizbQuarter) || other.startHizbQuarter == startHizbQuarter)&&(identical(other.startAyahUthmaniText, startAyahUthmaniText) || other.startAyahUthmaniText == startAyahUthmaniText));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,startAyahId,endAyahId,startPage,startSurahNumber,startAyahInSurah,startHizbQuarter);
+int get hashCode => Object.hash(runtimeType,number,startAyahId,endAyahId,startPage,startSurahNumber,startAyahInSurah,startHizbQuarter,startAyahUthmaniText);
 
 @override
 String toString() {
-  return 'Hizb(number: $number, startAyahId: $startAyahId, endAyahId: $endAyahId, startPage: $startPage, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah, startHizbQuarter: $startHizbQuarter)';
+  return 'Hizb(number: $number, startAyahId: $startAyahId, endAyahId: $endAyahId, startPage: $startPage, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah, startHizbQuarter: $startHizbQuarter, startAyahUthmaniText: $startAyahUthmaniText)';
 }
 
 
@@ -267,7 +271,7 @@ abstract mixin class _$HizbCopyWith<$Res> implements $HizbCopyWith<$Res> {
   factory _$HizbCopyWith(_Hizb value, $Res Function(_Hizb) _then) = __$HizbCopyWithImpl;
 @override @useResult
 $Res call({
- int number, int? startAyahId, int? endAyahId, int? startPage, int? startSurahNumber, int? startAyahInSurah, int? startHizbQuarter
+ int number, int? startAyahId, int? endAyahId, int? startPage, int? startSurahNumber, int? startAyahInSurah, int? startHizbQuarter, String? startAyahUthmaniText
 });
 
 
@@ -284,7 +288,7 @@ class __$HizbCopyWithImpl<$Res>
 
 /// Create a copy of Hizb
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startPage = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,Object? startHizbQuarter = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startPage = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,Object? startHizbQuarter = freezed,Object? startAyahUthmaniText = freezed,}) {
   return _then(_Hizb(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
@@ -293,7 +297,8 @@ as int?,startPage: freezed == startPage ? _self.startPage : startPage // ignore:
 as int?,startSurahNumber: freezed == startSurahNumber ? _self.startSurahNumber : startSurahNumber // ignore: cast_nullable_to_non_nullable
 as int?,startAyahInSurah: freezed == startAyahInSurah ? _self.startAyahInSurah : startAyahInSurah // ignore: cast_nullable_to_non_nullable
 as int?,startHizbQuarter: freezed == startHizbQuarter ? _self.startHizbQuarter : startHizbQuarter // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,startAyahUthmaniText: freezed == startAyahUthmaniText ? _self.startAyahUthmaniText : startAyahUthmaniText // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

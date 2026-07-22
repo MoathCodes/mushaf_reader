@@ -38,7 +38,10 @@ mixin _$Ayah {
  String get text;/// Plain Arabic text without tajweed marks (Imlaei script).
 ///
 /// Useful for text-to-speech, search, and accessibility features.
- String? get textPlain;/// The Manzil number this Ayah belongs to (1-7).
+ String? get textPlain;/// Uthmanic Hafs text with tashkeel from `quran.json` `text` key.
+///
+/// Distinct from [text] (QCF4 glyph encoding) and [textPlain] (Imlaei).
+ String? get uthmaniText;/// The Manzil number this Ayah belongs to (1-7).
 ///
 /// The Quran is divided into 7 Manzils for weekly reading,
 /// completing the entire Quran in one week.
@@ -68,16 +71,16 @@ $AyahCopyWith<Ayah> get copyWith => _$AyahCopyWithImpl<Ayah>(this as Ayah, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ayah&&(identical(other.ayahId, ayahId) || other.ayahId == ayahId)&&(identical(other.juz, juz) || other.juz == juz)&&(identical(other.page, page) || other.page == page)&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.numberInSurah, numberInSurah) || other.numberInSurah == numberInSurah)&&(identical(other.text, text) || other.text == text)&&(identical(other.textPlain, textPlain) || other.textPlain == textPlain)&&(identical(other.manzil, manzil) || other.manzil == manzil)&&(identical(other.ruku, ruku) || other.ruku == ruku)&&(identical(other.hizbQuarter, hizbQuarter) || other.hizbQuarter == hizbQuarter)&&(identical(other.sajda, sajda) || other.sajda == sajda)&&(identical(other.pageInSurah, pageInSurah) || other.pageInSurah == pageInSurah));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Ayah&&(identical(other.ayahId, ayahId) || other.ayahId == ayahId)&&(identical(other.juz, juz) || other.juz == juz)&&(identical(other.page, page) || other.page == page)&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.numberInSurah, numberInSurah) || other.numberInSurah == numberInSurah)&&(identical(other.text, text) || other.text == text)&&(identical(other.textPlain, textPlain) || other.textPlain == textPlain)&&(identical(other.uthmaniText, uthmaniText) || other.uthmaniText == uthmaniText)&&(identical(other.manzil, manzil) || other.manzil == manzil)&&(identical(other.ruku, ruku) || other.ruku == ruku)&&(identical(other.hizbQuarter, hizbQuarter) || other.hizbQuarter == hizbQuarter)&&(identical(other.sajda, sajda) || other.sajda == sajda)&&(identical(other.pageInSurah, pageInSurah) || other.pageInSurah == pageInSurah));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ayahId,juz,page,surahNumber,numberInSurah,text,textPlain,manzil,ruku,hizbQuarter,sajda,pageInSurah);
+int get hashCode => Object.hash(runtimeType,ayahId,juz,page,surahNumber,numberInSurah,text,textPlain,uthmaniText,manzil,ruku,hizbQuarter,sajda,pageInSurah);
 
 @override
 String toString() {
-  return 'Ayah(ayahId: $ayahId, juz: $juz, page: $page, surahNumber: $surahNumber, numberInSurah: $numberInSurah, text: $text, textPlain: $textPlain, manzil: $manzil, ruku: $ruku, hizbQuarter: $hizbQuarter, sajda: $sajda, pageInSurah: $pageInSurah)';
+  return 'Ayah(ayahId: $ayahId, juz: $juz, page: $page, surahNumber: $surahNumber, numberInSurah: $numberInSurah, text: $text, textPlain: $textPlain, uthmaniText: $uthmaniText, manzil: $manzil, ruku: $ruku, hizbQuarter: $hizbQuarter, sajda: $sajda, pageInSurah: $pageInSurah)';
 }
 
 
@@ -88,7 +91,7 @@ abstract mixin class $AyahCopyWith<$Res>  {
   factory $AyahCopyWith(Ayah value, $Res Function(Ayah) _then) = _$AyahCopyWithImpl;
 @useResult
 $Res call({
- int ayahId, int juz, int page, int surahNumber, int numberInSurah, String text, String? textPlain, int? manzil, int? ruku, int? hizbQuarter, bool? sajda, int? pageInSurah
+ int ayahId, int juz, int page, int surahNumber, int numberInSurah, String text, String? textPlain, String? uthmaniText, int? manzil, int? ruku, int? hizbQuarter, bool? sajda, int? pageInSurah
 });
 
 
@@ -105,7 +108,7 @@ class _$AyahCopyWithImpl<$Res>
 
 /// Create a copy of Ayah
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ayahId = null,Object? juz = null,Object? page = null,Object? surahNumber = null,Object? numberInSurah = null,Object? text = null,Object? textPlain = freezed,Object? manzil = freezed,Object? ruku = freezed,Object? hizbQuarter = freezed,Object? sajda = freezed,Object? pageInSurah = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ayahId = null,Object? juz = null,Object? page = null,Object? surahNumber = null,Object? numberInSurah = null,Object? text = null,Object? textPlain = freezed,Object? uthmaniText = freezed,Object? manzil = freezed,Object? ruku = freezed,Object? hizbQuarter = freezed,Object? sajda = freezed,Object? pageInSurah = freezed,}) {
   return _then(_self.copyWith(
 ayahId: null == ayahId ? _self.ayahId : ayahId // ignore: cast_nullable_to_non_nullable
 as int,juz: null == juz ? _self.juz : juz // ignore: cast_nullable_to_non_nullable
@@ -114,6 +117,7 @@ as int,surahNumber: null == surahNumber ? _self.surahNumber : surahNumber // ign
 as int,numberInSurah: null == numberInSurah ? _self.numberInSurah : numberInSurah // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,textPlain: freezed == textPlain ? _self.textPlain : textPlain // ignore: cast_nullable_to_non_nullable
+as String?,uthmaniText: freezed == uthmaniText ? _self.uthmaniText : uthmaniText // ignore: cast_nullable_to_non_nullable
 as String?,manzil: freezed == manzil ? _self.manzil : manzil // ignore: cast_nullable_to_non_nullable
 as int?,ruku: freezed == ruku ? _self.ruku : ruku // ignore: cast_nullable_to_non_nullable
 as int?,hizbQuarter: freezed == hizbQuarter ? _self.hizbQuarter : hizbQuarter // ignore: cast_nullable_to_non_nullable
@@ -204,10 +208,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  String? uthmaniText,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Ayah() when $default != null:
-return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
+return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.uthmaniText,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
   return orElse();
 
 }
@@ -225,10 +229,10 @@ return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.number
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  String? uthmaniText,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)  $default,) {final _that = this;
 switch (_that) {
 case _Ayah():
-return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
+return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.uthmaniText,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -245,10 +249,10 @@ return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.number
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int ayahId,  int juz,  int page,  int surahNumber,  int numberInSurah,  String text,  String? textPlain,  String? uthmaniText,  int? manzil,  int? ruku,  int? hizbQuarter,  bool? sajda,  int? pageInSurah)?  $default,) {final _that = this;
 switch (_that) {
 case _Ayah() when $default != null:
-return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
+return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.numberInSurah,_that.text,_that.textPlain,_that.uthmaniText,_that.manzil,_that.ruku,_that.hizbQuarter,_that.sajda,_that.pageInSurah);case _:
   return null;
 
 }
@@ -260,7 +264,7 @@ return $default(_that.ayahId,_that.juz,_that.page,_that.surahNumber,_that.number
 
 
 class _Ayah extends Ayah {
-   _Ayah({required this.ayahId, required this.juz, required this.page, required this.surahNumber, required this.numberInSurah, required this.text, this.textPlain, this.manzil, this.ruku, this.hizbQuarter, this.sajda, this.pageInSurah}): super._();
+   _Ayah({required this.ayahId, required this.juz, required this.page, required this.surahNumber, required this.numberInSurah, required this.text, this.textPlain, this.uthmaniText, this.manzil, this.ruku, this.hizbQuarter, this.sajda, this.pageInSurah}): super._();
   
 
 /// The global unique identifier for this Ayah (1-6236).
@@ -294,6 +298,10 @@ class _Ayah extends Ayah {
 ///
 /// Useful for text-to-speech, search, and accessibility features.
 @override final  String? textPlain;
+/// Uthmanic Hafs text with tashkeel from `quran.json` `text` key.
+///
+/// Distinct from [text] (QCF4 glyph encoding) and [textPlain] (Imlaei).
+@override final  String? uthmaniText;
 /// The Manzil number this Ayah belongs to (1-7).
 ///
 /// The Quran is divided into 7 Manzils for weekly reading,
@@ -329,16 +337,16 @@ _$AyahCopyWith<_Ayah> get copyWith => __$AyahCopyWithImpl<_Ayah>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ayah&&(identical(other.ayahId, ayahId) || other.ayahId == ayahId)&&(identical(other.juz, juz) || other.juz == juz)&&(identical(other.page, page) || other.page == page)&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.numberInSurah, numberInSurah) || other.numberInSurah == numberInSurah)&&(identical(other.text, text) || other.text == text)&&(identical(other.textPlain, textPlain) || other.textPlain == textPlain)&&(identical(other.manzil, manzil) || other.manzil == manzil)&&(identical(other.ruku, ruku) || other.ruku == ruku)&&(identical(other.hizbQuarter, hizbQuarter) || other.hizbQuarter == hizbQuarter)&&(identical(other.sajda, sajda) || other.sajda == sajda)&&(identical(other.pageInSurah, pageInSurah) || other.pageInSurah == pageInSurah));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ayah&&(identical(other.ayahId, ayahId) || other.ayahId == ayahId)&&(identical(other.juz, juz) || other.juz == juz)&&(identical(other.page, page) || other.page == page)&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.numberInSurah, numberInSurah) || other.numberInSurah == numberInSurah)&&(identical(other.text, text) || other.text == text)&&(identical(other.textPlain, textPlain) || other.textPlain == textPlain)&&(identical(other.uthmaniText, uthmaniText) || other.uthmaniText == uthmaniText)&&(identical(other.manzil, manzil) || other.manzil == manzil)&&(identical(other.ruku, ruku) || other.ruku == ruku)&&(identical(other.hizbQuarter, hizbQuarter) || other.hizbQuarter == hizbQuarter)&&(identical(other.sajda, sajda) || other.sajda == sajda)&&(identical(other.pageInSurah, pageInSurah) || other.pageInSurah == pageInSurah));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,ayahId,juz,page,surahNumber,numberInSurah,text,textPlain,manzil,ruku,hizbQuarter,sajda,pageInSurah);
+int get hashCode => Object.hash(runtimeType,ayahId,juz,page,surahNumber,numberInSurah,text,textPlain,uthmaniText,manzil,ruku,hizbQuarter,sajda,pageInSurah);
 
 @override
 String toString() {
-  return 'Ayah(ayahId: $ayahId, juz: $juz, page: $page, surahNumber: $surahNumber, numberInSurah: $numberInSurah, text: $text, textPlain: $textPlain, manzil: $manzil, ruku: $ruku, hizbQuarter: $hizbQuarter, sajda: $sajda, pageInSurah: $pageInSurah)';
+  return 'Ayah(ayahId: $ayahId, juz: $juz, page: $page, surahNumber: $surahNumber, numberInSurah: $numberInSurah, text: $text, textPlain: $textPlain, uthmaniText: $uthmaniText, manzil: $manzil, ruku: $ruku, hizbQuarter: $hizbQuarter, sajda: $sajda, pageInSurah: $pageInSurah)';
 }
 
 
@@ -349,7 +357,7 @@ abstract mixin class _$AyahCopyWith<$Res> implements $AyahCopyWith<$Res> {
   factory _$AyahCopyWith(_Ayah value, $Res Function(_Ayah) _then) = __$AyahCopyWithImpl;
 @override @useResult
 $Res call({
- int ayahId, int juz, int page, int surahNumber, int numberInSurah, String text, String? textPlain, int? manzil, int? ruku, int? hizbQuarter, bool? sajda, int? pageInSurah
+ int ayahId, int juz, int page, int surahNumber, int numberInSurah, String text, String? textPlain, String? uthmaniText, int? manzil, int? ruku, int? hizbQuarter, bool? sajda, int? pageInSurah
 });
 
 
@@ -366,7 +374,7 @@ class __$AyahCopyWithImpl<$Res>
 
 /// Create a copy of Ayah
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ayahId = null,Object? juz = null,Object? page = null,Object? surahNumber = null,Object? numberInSurah = null,Object? text = null,Object? textPlain = freezed,Object? manzil = freezed,Object? ruku = freezed,Object? hizbQuarter = freezed,Object? sajda = freezed,Object? pageInSurah = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ayahId = null,Object? juz = null,Object? page = null,Object? surahNumber = null,Object? numberInSurah = null,Object? text = null,Object? textPlain = freezed,Object? uthmaniText = freezed,Object? manzil = freezed,Object? ruku = freezed,Object? hizbQuarter = freezed,Object? sajda = freezed,Object? pageInSurah = freezed,}) {
   return _then(_Ayah(
 ayahId: null == ayahId ? _self.ayahId : ayahId // ignore: cast_nullable_to_non_nullable
 as int,juz: null == juz ? _self.juz : juz // ignore: cast_nullable_to_non_nullable
@@ -375,6 +383,7 @@ as int,surahNumber: null == surahNumber ? _self.surahNumber : surahNumber // ign
 as int,numberInSurah: null == numberInSurah ? _self.numberInSurah : numberInSurah // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,textPlain: freezed == textPlain ? _self.textPlain : textPlain // ignore: cast_nullable_to_non_nullable
+as String?,uthmaniText: freezed == uthmaniText ? _self.uthmaniText : uthmaniText // ignore: cast_nullable_to_non_nullable
 as String?,manzil: freezed == manzil ? _self.manzil : manzil // ignore: cast_nullable_to_non_nullable
 as int?,ruku: freezed == ruku ? _self.ruku : ruku // ignore: cast_nullable_to_non_nullable
 as int?,hizbQuarter: freezed == hizbQuarter ? _self.hizbQuarter : hizbQuarter // ignore: cast_nullable_to_non_nullable

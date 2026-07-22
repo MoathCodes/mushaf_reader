@@ -40,6 +40,7 @@
 | ثوابت ومساعدات  | `MushafConstants`، `Ayah.globalIdFor()`، `Ayah.hizb`، `AyahIdResolver`           |
 | إعادة البناء    | `MushafSelectionListenable`، `MushafPageListenable` — استمع لجزء من المتحكّم فقط |
 | نماذج التلاوة   | `SurahTiming`، `AyahTiming` — إزاحات ms لكل آية (لتطبيقات الصوت الخاصة بك)      |
+| دورة حياة المستودع | `HiveQuranRepository.acquire()` / `dispose()` — للملكية؛ `instance` للوصول للقراءة فقط |
 | أنواع الاستدعاء | `AyahTapCallback`، `AyahIdTapCallback`، `SurahTapCallback`، …                  |
 | الخطوط والتحجيم | `MushafFonts`، `MushafScale`، `MushafTextStyleMerger`                          |
 
@@ -214,6 +215,14 @@ ListenableBuilder(
 ### نماذج توقيت التلاوة
 
 `SurahTiming` و`AyahTiming` نماذج JSON لمساعدة تطبيقاتك عند جلب توقيت آيات ملف MP3 لكل سورة. **لا** يوجد مشغّل صوت مضمّن — استخدم `ayahAt(positionMs)` لتمييز الآية أثناء التشغيل.
+
+### عدّ مراجع المستودع
+
+`HiveQuranRepository` نسخة واحدة على مستوى العملية. استدعاء `HiveQuranRepository()` أو `instance` يعيد النسخة المشتركة **دون** زيادة العداد — مناسب للويدجت التي تقرأ بيانات مخزّنة مؤقتاً فقط.
+
+الملكية (مثل `MushafReaderController`) تستدعي `acquire()` مرة واحدة ثم `dispose()` عند الإغلاق. لا تستدعِ المصنع من داخل `build()`؛ مرّر `controller.repository` أو `IQuranRepository` مُحقوناً.
+
+`MushafReader` يبقي نافذة صفحات حية فقط (الصفحة الحالية ±1) داخل `PageView`. `MushafPage` المنفردة تستخدم `keepAlive: false` افتراضياً.
 
 ## خطافات التخصيص
 

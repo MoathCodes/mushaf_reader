@@ -181,6 +181,9 @@ class _MushafPageRangeState extends State<MushafPageRange> {
   List<_LoadedSlice>? _slices;
   Object? _loadError;
 
+  /// Drops stale async results when the selection changes mid-load.
+  int _loadGeneration = 0;
+
   @override
   void initState() {
     super.initState();
@@ -205,7 +208,7 @@ class _MushafPageRangeState extends State<MushafPageRange> {
   IQuranRepository _resolveRepository() {
     return widget.controller?.repository ??
         widget.repository ??
-        HiveQuranRepository();
+        HiveQuranRepository.instance;
   }
 
   bool _selectionChanged(MushafPageRange oldWidget) {
@@ -218,16 +221,17 @@ class _MushafPageRangeState extends State<MushafPageRange> {
   }
 
   Future<void> _loadSlices() async {
+    final generation = ++_loadGeneration;
     _loadError = null;
     _slices = null;
     if (mounted) setState(() {});
 
     try {
       final slices = await _resolveSlices();
-      if (!mounted) return;
+      if (!mounted || generation != _loadGeneration) return;
       setState(() => _slices = slices);
     } on Object catch (error) {
-      if (!mounted) return;
+      if (!mounted || generation != _loadGeneration) return;
       setState(() => _loadError = error);
     }
   }

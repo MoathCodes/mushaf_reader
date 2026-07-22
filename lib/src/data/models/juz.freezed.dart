@@ -30,7 +30,9 @@ mixin _$Juz {
  int? get startAyahId;/// The global Ayah ID where this Juz ends (1-6236).
 ///
 /// This is the ID of the last Ayah in the Juz.
- int? get endAyahId;
+ int? get endAyahId;/// Surah number of the first ayah in this Juz (1–114).
+ int? get startSurahNumber;/// Ayah number within [startSurahNumber] for the first ayah in this Juz.
+ int? get startAyahInSurah;
 /// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,16 +43,16 @@ $JuzCopyWith<Juz> get copyWith => _$JuzCopyWithImpl<Juz>(this as Juz, _$identity
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId,endAyahId);
+int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId,endAyahId,startSurahNumber,startAyahInSurah);
 
 @override
 String toString() {
-  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId, endAyahId: $endAyahId)';
+  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId, endAyahId: $endAyahId, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah)';
 }
 
 
@@ -61,7 +63,7 @@ abstract mixin class $JuzCopyWith<$Res>  {
   factory $JuzCopyWith(Juz value, $Res Function(Juz) _then) = _$JuzCopyWithImpl;
 @useResult
 $Res call({
- int number, String glyph, int? startPage, int? startAyahId, int? endAyahId
+ int number, String glyph, int? startPage, int? startAyahId, int? endAyahId, int? startSurahNumber, int? startAyahInSurah
 });
 
 
@@ -78,13 +80,15 @@ class _$JuzCopyWithImpl<$Res>
 
 /// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,Object? endAyahId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,}) {
   return _then(_self.copyWith(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
 as String,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
 as int?,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
 as int?,endAyahId: freezed == endAyahId ? _self.endAyahId : endAyahId // ignore: cast_nullable_to_non_nullable
+as int?,startSurahNumber: freezed == startSurahNumber ? _self.startSurahNumber : startSurahNumber // ignore: cast_nullable_to_non_nullable
+as int?,startAyahInSurah: freezed == startAyahInSurah ? _self.startAyahInSurah : startAyahInSurah // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -170,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId,  int? startSurahNumber,  int? startAyahInSurah)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Juz() when $default != null:
-return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId,_that.startSurahNumber,_that.startAyahInSurah);case _:
   return orElse();
 
 }
@@ -191,10 +195,10 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId,  int? startSurahNumber,  int? startAyahInSurah)  $default,) {final _that = this;
 switch (_that) {
 case _Juz():
-return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId,_that.startSurahNumber,_that.startAyahInSurah);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +215,10 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int number,  String glyph,  int? startPage,  int? startAyahId,  int? endAyahId,  int? startSurahNumber,  int? startAyahInSurah)?  $default,) {final _that = this;
 switch (_that) {
 case _Juz() when $default != null:
-return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId);case _:
+return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that.endAyahId,_that.startSurahNumber,_that.startAyahInSurah);case _:
   return null;
 
 }
@@ -226,7 +230,7 @@ return $default(_that.number,_that.glyph,_that.startPage,_that.startAyahId,_that
 
 
 class _Juz extends Juz {
-   _Juz({required this.number, required this.glyph, this.startPage, this.startAyahId, this.endAyahId}): super._();
+   _Juz({required this.number, required this.glyph, this.startPage, this.startAyahId, this.endAyahId, this.startSurahNumber, this.startAyahInSurah}): super._();
   
 
 /// The Juz number (1-30).
@@ -250,6 +254,10 @@ class _Juz extends Juz {
 ///
 /// This is the ID of the last Ayah in the Juz.
 @override final  int? endAyahId;
+/// Surah number of the first ayah in this Juz (1–114).
+@override final  int? startSurahNumber;
+/// Ayah number within [startSurahNumber] for the first ayah in this Juz.
+@override final  int? startAyahInSurah;
 
 /// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
@@ -261,16 +269,16 @@ _$JuzCopyWith<_Juz> get copyWith => __$JuzCopyWithImpl<_Juz>(this, _$identity);
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Juz&&(identical(other.number, number) || other.number == number)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.startPage, startPage) || other.startPage == startPage)&&(identical(other.startAyahId, startAyahId) || other.startAyahId == startAyahId)&&(identical(other.endAyahId, endAyahId) || other.endAyahId == endAyahId)&&(identical(other.startSurahNumber, startSurahNumber) || other.startSurahNumber == startSurahNumber)&&(identical(other.startAyahInSurah, startAyahInSurah) || other.startAyahInSurah == startAyahInSurah));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId,endAyahId);
+int get hashCode => Object.hash(runtimeType,number,glyph,startPage,startAyahId,endAyahId,startSurahNumber,startAyahInSurah);
 
 @override
 String toString() {
-  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId, endAyahId: $endAyahId)';
+  return 'Juz(number: $number, glyph: $glyph, startPage: $startPage, startAyahId: $startAyahId, endAyahId: $endAyahId, startSurahNumber: $startSurahNumber, startAyahInSurah: $startAyahInSurah)';
 }
 
 
@@ -281,7 +289,7 @@ abstract mixin class _$JuzCopyWith<$Res> implements $JuzCopyWith<$Res> {
   factory _$JuzCopyWith(_Juz value, $Res Function(_Juz) _then) = __$JuzCopyWithImpl;
 @override @useResult
 $Res call({
- int number, String glyph, int? startPage, int? startAyahId, int? endAyahId
+ int number, String glyph, int? startPage, int? startAyahId, int? endAyahId, int? startSurahNumber, int? startAyahInSurah
 });
 
 
@@ -298,13 +306,15 @@ class __$JuzCopyWithImpl<$Res>
 
 /// Create a copy of Juz
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,Object? endAyahId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? number = null,Object? glyph = null,Object? startPage = freezed,Object? startAyahId = freezed,Object? endAyahId = freezed,Object? startSurahNumber = freezed,Object? startAyahInSurah = freezed,}) {
   return _then(_Juz(
 number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_non_nullable
 as String,startPage: freezed == startPage ? _self.startPage : startPage // ignore: cast_nullable_to_non_nullable
 as int?,startAyahId: freezed == startAyahId ? _self.startAyahId : startAyahId // ignore: cast_nullable_to_non_nullable
 as int?,endAyahId: freezed == endAyahId ? _self.endAyahId : endAyahId // ignore: cast_nullable_to_non_nullable
+as int?,startSurahNumber: freezed == startSurahNumber ? _self.startSurahNumber : startSurahNumber // ignore: cast_nullable_to_non_nullable
+as int?,startAyahInSurah: freezed == startAyahInSurah ? _self.startAyahInSurah : startAyahInSurah // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }

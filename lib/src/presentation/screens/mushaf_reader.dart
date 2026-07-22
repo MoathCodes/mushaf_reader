@@ -129,7 +129,32 @@ class _MushafReaderState extends State<MushafReader> {
   bool _ownsController = false;
   bool _isInitialized = false;
 
+  /// True while the user is dragging or flinging the [PageView].
+  ///
+  /// [PageView.onPageChanged] also fires when the viewport is resized or
+  /// re-attached after a layout change; those callbacks must not overwrite
+  /// [MushafReaderController.currentPage].
+  bool _userInteractingWithPageView = false;
+
+  bool _syncScheduled = false;
+
   bool get _isTwoPage => widget.pagesPerViewport == 2;
+
+  /// Keeps only the visible page(s) and immediate neighbors alive in the
+  /// [PageView] (current ±1) so scroll-back stays smooth without retaining
+  /// every visited page for the session.
+  bool _isPageInKeepAliveWindow(int page) {
+    final anchor = _controller.currentPage;
+    if (_isTwoPage) {
+      final maxVisible = (anchor + 1).clamp(1, MushafConstants.pageCount);
+      return page >= anchor - 1 && page <= maxVisible + 1;
+    }
+    return (page - anchor).abs() <= 1;
+  }
+
+  void _onControllerPageChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,21 +164,24 @@ class _MushafReaderState extends State<MushafReader> {
 
     return Directionality(
       textDirection: widget.textDirection,
-      child: PageView.builder(
-        controller: _controller.pageController,
-        reverse: widget.reverse,
-        clipBehavior: widget.clipBehavior,
-        physics: widget.physics,
-        itemCount: _isTwoPage
-            ? MushafConstants.twoPageSpreadCount
-            : MushafConstants.pageCount,
-        onPageChanged: _onPageChanged,
-        itemBuilder: (context, index) {
-          if (_isTwoPage) {
-            return _buildSpread(index);
-          }
-          return _buildSinglePage(index + 1);
-        },
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _onScrollNotification,
+        child: PageView.builder(
+          controller: _controller.pageController,
+          reverse: widget.reverse,
+          clipBehavior: widget.clipBehavior,
+          physics: widget.physics,
+          itemCount: _isTwoPage
+              ? MushafConstants.twoPageSpreadCount
+              : MushafConstants.pageCount,
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) {
+            if (_isTwoPage) {
+              return _buildSpread(index);
+            }
+            return _buildSinglePage(index + 1);
+          },
+        ),
       ),
     );
   }
@@ -172,6 +200,7 @@ class _MushafReaderState extends State<MushafReader> {
 
   @override
   void dispose() {
+    _controller.page.removeListener(_onControllerPageChanged);
     if (_ownsController) {
       _controller.dispose();
     }
@@ -192,6 +221,7 @@ class _MushafReaderState extends State<MushafReader> {
       );
       _ownsController = true;
     }
+    _controller.page.addListener(_onControllerPageChanged);
     _initController();
   }
 
@@ -201,6 +231,7 @@ class _MushafReaderState extends State<MushafReader> {
         key: ValueKey(page),
         page: page,
         controller: _controller,
+        keepAlive: _isPageInKeepAliveWindow(page),
         style: widget.style,
         loadingWidget: widget.pageLoadingWidget,
         hideHeader: widget.hideHeader,
@@ -233,27 +264,73 @@ class _MushafReaderState extends State<MushafReader> {
   Future<void> _handleAyahLongPress(int ayahId) async {
     if (widget.onAyahLongPress == null) return;
     final ayah = await _controller.getAyah(ayahId);
+    if (!mounted) return;
     widget.onAyahLongPress!(ayah);
   }
 
   Future<void> _handleAyahTap(int ayahId) async {
     if (widget.onAyahTap == null) return;
     final ayah = await _controller.getAyah(ayahId);
+    if (!mounted) return;
     widget.onAyahTap!(ayah);
   }
 
   Future<void> _initController() async {
     await _controller.ensureReady();
-    if (mounted) {
-      setState(() {
-        _isInitialized = true;
-      });
-      await _controller.loadCurrentPageInfo();
+    if (!mounted) return;
+    setState(() {
+      _isInitialized = true;
+    });
+    _scheduleSyncPageViewToController();
+    await _controller.loadCurrentPageInfo();
+  }
+
+  int _expectedViewportIndex() =>
+      (_controller.currentPage - 1) ~/ widget.pagesPerViewport;
+
+  void _scheduleSyncPageViewToController() {
+    if (_syncScheduled) return;
+    _syncScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncScheduled = false;
+      if (!mounted) return;
+      _syncPageViewToController();
+    });
+  }
+
+  void _syncPageViewToController() {
+    final pageController = _controller.pageController;
+    if (!pageController.hasClients) return;
+
+    final expectedIndex = _expectedViewportIndex();
+    final currentIndex = pageController.page?.round();
+    if (currentIndex == expectedIndex) return;
+
+    pageController.jumpToPage(expectedIndex);
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification.depth != 0) return false;
+
+    if (notification is ScrollStartNotification) {
+      if (notification.dragDetails != null) {
+        _userInteractingWithPageView = true;
+      }
+    } else if (notification is ScrollEndNotification) {
+      _userInteractingWithPageView = false;
     }
+    return false;
   }
 
   void _onPageChanged(int index) {
+    final expectedIndex = _expectedViewportIndex();
+    if (index != expectedIndex && !_userInteractingWithPageView) {
+      _scheduleSyncPageViewToController();
+      return;
+    }
+
     _controller.onPageChanged(index);
+    if (mounted) setState(() {});
 
     if (_isTwoPage) {
       final pages = _controller.currentPages;
@@ -261,6 +338,7 @@ class _MushafReaderState extends State<MushafReader> {
 
       if (widget.onSpreadChanged != null) {
         _controller.getTwoPagesInfo(pages.$1).then((info) {
+          if (!mounted) return;
           widget.onSpreadChanged?.call(info);
         });
       }
@@ -270,6 +348,7 @@ class _MushafReaderState extends State<MushafReader> {
 
       if (widget.onPageChanged != null) {
         _controller.getPageInfo(page).then((info) {
+          if (!mounted) return;
           widget.onPageChanged?.call(info);
         });
       }

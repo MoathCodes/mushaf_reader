@@ -24,6 +24,7 @@ class AyahAdapter extends TypeAdapter<Ayah> {
       numberInSurah: (fields[4] as num).toInt(),
       text: fields[5] as String,
       textPlain: fields[6] as String?,
+      uthmaniText: fields[12] as String?,
       manzil: (fields[7] as num?)?.toInt(),
       ruku: (fields[8] as num?)?.toInt(),
       hizbQuarter: (fields[9] as num?)?.toInt(),
@@ -35,7 +36,7 @@ class AyahAdapter extends TypeAdapter<Ayah> {
   @override
   void write(BinaryWriter writer, Ayah obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.ayahId)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class AyahAdapter extends TypeAdapter<Ayah> {
       ..writeByte(10)
       ..write(obj.sajda)
       ..writeByte(11)
-      ..write(obj.pageInSurah);
+      ..write(obj.pageInSurah)
+      ..writeByte(12)
+      ..write(obj.uthmaniText);
   }
 
   @override
@@ -132,13 +135,15 @@ class JuzAdapter extends TypeAdapter<Juz> {
       startPage: (fields[2] as num?)?.toInt(),
       startAyahId: (fields[3] as num?)?.toInt(),
       endAyahId: (fields[4] as num?)?.toInt(),
+      startSurahNumber: (fields[5] as num?)?.toInt(),
+      startAyahInSurah: (fields[6] as num?)?.toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Juz obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
@@ -148,7 +153,11 @@ class JuzAdapter extends TypeAdapter<Juz> {
       ..writeByte(3)
       ..write(obj.startAyahId)
       ..writeByte(4)
-      ..write(obj.endAyahId);
+      ..write(obj.endAyahId)
+      ..writeByte(5)
+      ..write(obj.startSurahNumber)
+      ..writeByte(6)
+      ..write(obj.startAyahInSurah);
   }
 
   @override
@@ -275,13 +284,14 @@ class HizbAdapter extends TypeAdapter<Hizb> {
       startSurahNumber: (fields[4] as num?)?.toInt(),
       startAyahInSurah: (fields[5] as num?)?.toInt(),
       startHizbQuarter: (fields[6] as num?)?.toInt(),
+      startAyahUthmaniText: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Hizb obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.number)
       ..writeByte(1)
@@ -295,7 +305,9 @@ class HizbAdapter extends TypeAdapter<Hizb> {
       ..writeByte(5)
       ..write(obj.startAyahInSurah)
       ..writeByte(6)
-      ..write(obj.startHizbQuarter);
+      ..write(obj.startHizbQuarter)
+      ..writeByte(7)
+      ..write(obj.startAyahUthmaniText);
   }
 
   @override

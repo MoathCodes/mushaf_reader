@@ -73,7 +73,11 @@ bool glyphFitsAtScale({
     maxLines: null,
   )..layout(maxWidth: contentWidth);
 
-  return painter.height <= maxAyahHeight;
+  try {
+    return painter.height <= maxAyahHeight;
+  } finally {
+    painter.dispose();
+  }
 }
 
 /// Largest reading boost so [baseFit] × boost still fits [maxAyahHeight].

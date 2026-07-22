@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:mushaf_reader/src/core/arabic_search_normalize.dart';
 import 'package:mushaf_reader/src/core/search_index_entry.dart';
 import 'package:mushaf_reader/src/data/ayah_id_resolver.dart';
@@ -58,8 +59,12 @@ class HiveQuranRepository implements IQuranRepository {
   /// The singleton instance of the repository.
   static HiveQuranRepository? _instance;
 
-  /// Reference count for automatic cleanup.
+  /// Reference count for lifecycle ownership (paired with [dispose]).
   static int _refCount = 0;
+
+  /// Current reference count (for tests).
+  @visibleForTesting
+  static int get refCount => _refCount;
 
   /// Default LRU capacity (single-page viewport).
   static const int kDefaultPageCacheCapacity = 16;
@@ -106,11 +111,24 @@ class HiveQuranRepository implements IQuranRepository {
   /// Global ayah id of the first verse in each surah (index 1–114).
   List<int>? _globalAyahIdStartBySurah;
 
-  /// Factory constructor that returns the singleton instance.
-  factory HiveQuranRepository() {
-    _refCount++;
+  /// The shared singleton (does not change [refCount]).
+  static HiveQuranRepository get instance {
     return _instance ??= HiveQuranRepository._internal();
   }
+
+  /// Returns [instance] and increments [refCount] for ownership.
+  ///
+  /// Pair each [acquire] with [dispose] on the returned instance (e.g. via
+  /// [MushafReaderController.dispose]).
+  static HiveQuranRepository acquire() {
+    _refCount++;
+    return instance;
+  }
+
+  /// Returns the singleton without changing [refCount].
+  ///
+  /// Prefer [acquire] when this repository is owned for its lifetime.
+  factory HiveQuranRepository() => instance;
 
   HiveQuranRepository._internal();
 
@@ -121,9 +139,11 @@ class HiveQuranRepository implements IQuranRepository {
 
   @override
   void dispose() {
-    _refCount--;
-    _pageCache.clear();
+    if (_refCount <= 0) return;
 
+    _refCount--;
+
+    // Keep the page LRU warm while other owners still hold a ref.
     if (_refCount <= 0) {
       _closeAndReset();
     }
@@ -140,7 +160,7 @@ class HiveQuranRepository implements IQuranRepository {
       // Shares the [HiveBoxManager] singleton with [MushafReaderLibrary].
       // Prefer calling MushafReaderLibrary.ensureInitialized() first so
       // [subDirectory] is applied before any box access.
-      _boxManager = HiveBoxManager();
+      _boxManager = HiveBoxManager.acquire();
       if (!_boxManager!.isInitialized) {
         await _boxManager!.init();
       }
@@ -235,7 +255,7 @@ class HiveQuranRepository implements IQuranRepository {
     // [MushafReaderLibrary.ensureInitialized] may open boxes before this
     // repository's [ensureReady] runs — hydrate the glyph synchronously when
     // the shared [HiveBoxManager] is already initialized.
-    final manager = HiveBoxManager();
+    final manager = HiveBoxManager.instance;
     if (manager.isInitialized) {
       _boxManager ??= manager;
       _basmalahCache = manager.metadataBox.get('basmalah');
@@ -426,12 +446,18 @@ class HiveQuranRepository implements IQuranRepository {
       );
     }
 
-    // Fetch all ayahs for this page
+    // Fetch ayahs in parallel — LazyBox has no batch get API.
+    final ayahIds = <int>{
+      for (final layout in layouts) layout.ayahId,
+    }.toList(growable: false);
+    final ayahResults = await Future.wait(
+      ayahIds.map((id) => _boxManager!.ayahsBox.get(id)),
+    );
     final ayahMap = <int, Ayah>{};
-    for (final layout in layouts) {
-      final ayah = await _boxManager!.ayahsBox.get(layout.ayahId);
+    for (var i = 0; i < ayahIds.length; i++) {
+      final ayah = ayahResults[i];
       if (ayah != null) {
-        ayahMap[layout.ayahId] = ayah;
+        ayahMap[ayahIds[i]] = ayah;
       }
     }
 
@@ -604,6 +630,7 @@ class HiveQuranRepository implements IQuranRepository {
     _boxManager?.dispose();
     _boxManager = null;
     _initCompleter = null;
+    _pageCache.clear();
     _surahCache.clear();
     _juzCache.clear();
     _hizbCache.clear();
