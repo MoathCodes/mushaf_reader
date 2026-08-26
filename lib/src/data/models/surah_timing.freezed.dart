@@ -489,7 +489,7 @@ return $default(_that.surah,_that.readId,_that.ayat);case _:
 @JsonSerializable()
 
 class _SurahTiming extends SurahTiming {
-  const _SurahTiming({required this.surah, required this.readId, required final  List<AyahTiming> ayat}): _ayat = ayat,super._();
+  const _SurahTiming({required this.surah, required this.readId, required this.ayat}): super._();
   factory _SurahTiming.fromJson(Map<String, dynamic> json) => _$SurahTimingFromJson(json);
 
 /// Surah number (1-114).
@@ -497,14 +497,7 @@ class _SurahTiming extends SurahTiming {
 /// The ayat_timing `read` id these timings belong to.
 @override final  int readId;
 /// Per-ayah timings ordered by ayah number.
- final  List<AyahTiming> _ayat;
-/// Per-ayah timings ordered by ayah number.
-@override List<AyahTiming> get ayat {
-  if (_ayat is EqualUnmodifiableListView) return _ayat;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_ayat);
-}
-
+@override final  List<AyahTiming> ayat;
 
 /// Create a copy of SurahTiming
 /// with the given fields replaced by the non-null parameter values.
@@ -519,12 +512,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahTiming&&(identical(other.surah, surah) || other.surah == surah)&&(identical(other.readId, readId) || other.readId == readId)&&const DeepCollectionEquality().equals(other._ayat, _ayat));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahTiming&&(identical(other.surah, surah) || other.surah == surah)&&(identical(other.readId, readId) || other.readId == readId)&&const DeepCollectionEquality().equals(other.ayat, ayat));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,surah,readId,const DeepCollectionEquality().hash(_ayat));
+int get hashCode => Object.hash(runtimeType,surah,readId,const DeepCollectionEquality().hash(ayat));
 
 @override
 String toString() {
@@ -560,7 +553,7 @@ class __$SurahTimingCopyWithImpl<$Res>
   return _then(_SurahTiming(
 surah: null == surah ? _self.surah : surah // ignore: cast_nullable_to_non_nullable
 as int,readId: null == readId ? _self.readId : readId // ignore: cast_nullable_to_non_nullable
-as int,ayat: null == ayat ? _self._ayat : ayat // ignore: cast_nullable_to_non_nullable
+as int,ayat: null == ayat ? _self.ayat : ayat // ignore: cast_nullable_to_non_nullable
 as List<AyahTiming>,
   ));
 }

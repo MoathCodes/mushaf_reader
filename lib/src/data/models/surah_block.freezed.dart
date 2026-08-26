@@ -228,7 +228,7 @@ return $default(_that.surahNumber,_that.glyph,_that.start,_that.end,_that.hasBas
 
 
 class _SurahBlock implements SurahBlock {
-  const _SurahBlock({required this.surahNumber, required this.glyph, required this.start, required this.end, required this.hasBasmalah, required final  List<AyahFragment> ayahs}): _ayahs = ayahs;
+  const _SurahBlock({required this.surahNumber, required this.glyph, required this.start, required this.end, required this.hasBasmalah, required this.ayahs});
   
 
 /// The Surah number (1-114).
@@ -253,16 +253,7 @@ class _SurahBlock implements SurahBlock {
 /// The Ayah fragments from this Surah that appear on this page.
 ///
 /// Fragments are ordered by their position in the Surah.
- final  List<AyahFragment> _ayahs;
-/// The Ayah fragments from this Surah that appear on this page.
-///
-/// Fragments are ordered by their position in the Surah.
-@override List<AyahFragment> get ayahs {
-  if (_ayahs is EqualUnmodifiableListView) return _ayahs;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_ayahs);
-}
-
+@override final  List<AyahFragment> ayahs;
 
 /// Create a copy of SurahBlock
 /// with the given fields replaced by the non-null parameter values.
@@ -274,12 +265,12 @@ _$SurahBlockCopyWith<_SurahBlock> get copyWith => __$SurahBlockCopyWithImpl<_Sur
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahBlock&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&const DeepCollectionEquality().equals(other._ayahs, _ayahs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SurahBlock&&(identical(other.surahNumber, surahNumber) || other.surahNumber == surahNumber)&&(identical(other.glyph, glyph) || other.glyph == glyph)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.hasBasmalah, hasBasmalah) || other.hasBasmalah == hasBasmalah)&&const DeepCollectionEquality().equals(other.ayahs, ayahs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,surahNumber,glyph,start,end,hasBasmalah,const DeepCollectionEquality().hash(_ayahs));
+int get hashCode => Object.hash(runtimeType,surahNumber,glyph,start,end,hasBasmalah,const DeepCollectionEquality().hash(ayahs));
 
 @override
 String toString() {
@@ -318,7 +309,7 @@ as int,glyph: null == glyph ? _self.glyph : glyph // ignore: cast_nullable_to_no
 as String,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
 as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
 as int,hasBasmalah: null == hasBasmalah ? _self.hasBasmalah : hasBasmalah // ignore: cast_nullable_to_non_nullable
-as bool,ayahs: null == ayahs ? _self._ayahs : ayahs // ignore: cast_nullable_to_non_nullable
+as bool,ayahs: null == ayahs ? _self.ayahs : ayahs // ignore: cast_nullable_to_non_nullable
 as List<AyahFragment>,
   ));
 }

@@ -224,7 +224,7 @@ return $default(_that.index,_that.start,_that.end,_that.fragments);case _:
 
 
 class _PageLine implements PageLine {
-   _PageLine({required this.index, required this.start, required this.end, required final  List<AyahFragment> fragments}): _fragments = fragments;
+   _PageLine({required this.index, required this.start, required this.end, required this.fragments});
   
 
 /// The zero-based index of this line on the page.
@@ -245,19 +245,7 @@ class _PageLine implements PageLine {
 /// - Part of a single Ayah (fragment spans the entire line)
 /// - Multiple complete Ayahs
 /// - Parts of multiple Ayahs (end of one, start of another)
- final  List<AyahFragment> _fragments;
-/// The Ayah fragments that appear on this line.
-///
-/// A line may contain:
-/// - Part of a single Ayah (fragment spans the entire line)
-/// - Multiple complete Ayahs
-/// - Parts of multiple Ayahs (end of one, start of another)
-@override List<AyahFragment> get fragments {
-  if (_fragments is EqualUnmodifiableListView) return _fragments;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_fragments);
-}
-
+@override final  List<AyahFragment> fragments;
 
 /// Create a copy of PageLine
 /// with the given fields replaced by the non-null parameter values.
@@ -269,12 +257,12 @@ _$PageLineCopyWith<_PageLine> get copyWith => __$PageLineCopyWithImpl<_PageLine>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageLine&&(identical(other.index, index) || other.index == index)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&const DeepCollectionEquality().equals(other._fragments, _fragments));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PageLine&&(identical(other.index, index) || other.index == index)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&const DeepCollectionEquality().equals(other.fragments, fragments));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,index,start,end,const DeepCollectionEquality().hash(_fragments));
+int get hashCode => Object.hash(runtimeType,index,start,end,const DeepCollectionEquality().hash(fragments));
 
 @override
 String toString() {
@@ -311,7 +299,7 @@ class __$PageLineCopyWithImpl<$Res>
 index: null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
 as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
-as int,fragments: null == fragments ? _self._fragments : fragments // ignore: cast_nullable_to_non_nullable
+as int,fragments: null == fragments ? _self.fragments : fragments // ignore: cast_nullable_to_non_nullable
 as List<AyahFragment>,
   ));
 }

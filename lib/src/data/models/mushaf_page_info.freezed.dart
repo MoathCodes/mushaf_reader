@@ -227,7 +227,7 @@ return $default(_that.pageNumber,_that.juzNumber,_that.surahNumbers,_that.surahN
 @JsonSerializable()
 
 class _MushafPageInfo extends MushafPageInfo {
-   _MushafPageInfo({required this.pageNumber, required this.juzNumber, required final  List<int> surahNumbers, required final  List<String> surahNames, required this.firstAyahId, required this.lastAyahId, required final  List<int> ayahIds}): _surahNumbers = surahNumbers,_surahNames = surahNames,_ayahIds = ayahIds,super._();
+   _MushafPageInfo({required this.pageNumber, required this.juzNumber, required this.surahNumbers, required this.surahNames, required this.firstAyahId, required this.lastAyahId, required this.ayahIds}): super._();
   factory _MushafPageInfo.fromJson(Map<String, dynamic> json) => _$MushafPageInfoFromJson(json);
 
 /// The page number in the Mushaf (1-604).
@@ -238,43 +238,17 @@ class _MushafPageInfo extends MushafPageInfo {
 ///
 /// A page may contain multiple Surahs (e.g., the end of one
 /// and the beginning of another). Ordered by appearance.
- final  List<int> _surahNumbers;
-/// List of Surah numbers present on this page.
-///
-/// A page may contain multiple Surahs (e.g., the end of one
-/// and the beginning of another). Ordered by appearance.
-@override List<int> get surahNumbers {
-  if (_surahNumbers is EqualUnmodifiableListView) return _surahNumbers;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_surahNumbers);
-}
-
+@override final  List<int> surahNumbers;
 /// List of Surah names (Arabic glyphs) present on this page.
 ///
 /// Corresponds to [surahNumbers] in the same order.
- final  List<String> _surahNames;
-/// List of Surah names (Arabic glyphs) present on this page.
-///
-/// Corresponds to [surahNumbers] in the same order.
-@override List<String> get surahNames {
-  if (_surahNames is EqualUnmodifiableListView) return _surahNames;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_surahNames);
-}
-
+@override final  List<String> surahNames;
 /// The global ID of the first Ayah on this page.
 @override final  int firstAyahId;
 /// The global ID of the last Ayah on this page.
 @override final  int lastAyahId;
 /// All Ayah IDs present on this page, in order.
- final  List<int> _ayahIds;
-/// All Ayah IDs present on this page, in order.
-@override List<int> get ayahIds {
-  if (_ayahIds is EqualUnmodifiableListView) return _ayahIds;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_ayahIds);
-}
-
+@override final  List<int> ayahIds;
 
 /// Create a copy of MushafPageInfo
 /// with the given fields replaced by the non-null parameter values.
@@ -289,12 +263,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MushafPageInfo&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber)&&const DeepCollectionEquality().equals(other._surahNumbers, _surahNumbers)&&const DeepCollectionEquality().equals(other._surahNames, _surahNames)&&(identical(other.firstAyahId, firstAyahId) || other.firstAyahId == firstAyahId)&&(identical(other.lastAyahId, lastAyahId) || other.lastAyahId == lastAyahId)&&const DeepCollectionEquality().equals(other._ayahIds, _ayahIds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MushafPageInfo&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber)&&const DeepCollectionEquality().equals(other.surahNumbers, surahNumbers)&&const DeepCollectionEquality().equals(other.surahNames, surahNames)&&(identical(other.firstAyahId, firstAyahId) || other.firstAyahId == firstAyahId)&&(identical(other.lastAyahId, lastAyahId) || other.lastAyahId == lastAyahId)&&const DeepCollectionEquality().equals(other.ayahIds, ayahIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,pageNumber,juzNumber,const DeepCollectionEquality().hash(_surahNumbers),const DeepCollectionEquality().hash(_surahNames),firstAyahId,lastAyahId,const DeepCollectionEquality().hash(_ayahIds));
+int get hashCode => Object.hash(runtimeType,pageNumber,juzNumber,const DeepCollectionEquality().hash(surahNumbers),const DeepCollectionEquality().hash(surahNames),firstAyahId,lastAyahId,const DeepCollectionEquality().hash(ayahIds));
 
 @override
 String toString() {
@@ -330,11 +304,11 @@ class __$MushafPageInfoCopyWithImpl<$Res>
   return _then(_MushafPageInfo(
 pageNumber: null == pageNumber ? _self.pageNumber : pageNumber // ignore: cast_nullable_to_non_nullable
 as int,juzNumber: null == juzNumber ? _self.juzNumber : juzNumber // ignore: cast_nullable_to_non_nullable
-as int,surahNumbers: null == surahNumbers ? _self._surahNumbers : surahNumbers // ignore: cast_nullable_to_non_nullable
-as List<int>,surahNames: null == surahNames ? _self._surahNames : surahNames // ignore: cast_nullable_to_non_nullable
+as int,surahNumbers: null == surahNumbers ? _self.surahNumbers : surahNumbers // ignore: cast_nullable_to_non_nullable
+as List<int>,surahNames: null == surahNames ? _self.surahNames : surahNames // ignore: cast_nullable_to_non_nullable
 as List<String>,firstAyahId: null == firstAyahId ? _self.firstAyahId : firstAyahId // ignore: cast_nullable_to_non_nullable
 as int,lastAyahId: null == lastAyahId ? _self.lastAyahId : lastAyahId // ignore: cast_nullable_to_non_nullable
-as int,ayahIds: null == ayahIds ? _self._ayahIds : ayahIds // ignore: cast_nullable_to_non_nullable
+as int,ayahIds: null == ayahIds ? _self.ayahIds : ayahIds // ignore: cast_nullable_to_non_nullable
 as List<int>,
   ));
 }

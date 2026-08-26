@@ -360,12 +360,12 @@ class _MushafPageRangeState extends State<MushafPageRange> {
     required double availableWidth,
   }) {
     final scaleConfig = style.scale;
-    final scale = resolveBaseFitScale(
-      scale: scaleConfig,
+    // Unbounded height → contain == width-fit; boost ≤ width-fit (no H-scroll).
+    final scale = resolvePageScale(
+      scaleConfig: scaleConfig,
       availableWidth: availableWidth,
       availableHeight: double.infinity,
-    ) *
-        resolveReadingBoost(scaleConfig);
+    );
 
     final contentWidth = scaleConfig.referenceWidth * scale;
     final ayahFontSize = snapToDevicePixel(

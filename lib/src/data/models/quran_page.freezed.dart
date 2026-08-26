@@ -239,7 +239,7 @@ return $default(_that.pageNumber,_that.glyphText,_that.lines,_that.surahs,_that.
 
 
 class _QuranPage implements QuranPage {
-   _QuranPage({required this.pageNumber, required this.glyphText, required final  List<PageLine> lines, required final  List<SurahBlock> surahs, required this.juzNumber}): _lines = lines,_surahs = surahs;
+   _QuranPage({required this.pageNumber, required this.glyphText, required this.lines, required this.surahs, required this.juzNumber});
   
 
 /// The page number in the Mushaf (1-604).
@@ -261,20 +261,7 @@ class _QuranPage implements QuranPage {
 /// - Ayah fragments that appear on that line
 ///
 /// Lines are ordered from top to bottom of the page.
- final  List<PageLine> _lines;
-/// Line-by-line layout information for the page.
-///
-/// Each [PageLine] contains:
-/// - Character start/end indices into [glyphText]
-/// - Ayah fragments that appear on that line
-///
-/// Lines are ordered from top to bottom of the page.
-@override List<PageLine> get lines {
-  if (_lines is EqualUnmodifiableListView) return _lines;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_lines);
-}
-
+@override final  List<PageLine> lines;
 /// Surah blocks present on this page.
 ///
 /// A page may contain one or more Surahs. Each [SurahBlock] contains:
@@ -283,21 +270,7 @@ class _QuranPage implements QuranPage {
 /// - All Ayah fragments for that Surah on this page
 ///
 /// Surahs are ordered by their appearance on the page.
- final  List<SurahBlock> _surahs;
-/// Surah blocks present on this page.
-///
-/// A page may contain one or more Surahs. Each [SurahBlock] contains:
-/// - Surah identification and header glyph
-/// - Whether to show the Basmalah
-/// - All Ayah fragments for that Surah on this page
-///
-/// Surahs are ordered by their appearance on the page.
-@override List<SurahBlock> get surahs {
-  if (_surahs is EqualUnmodifiableListView) return _surahs;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_surahs);
-}
-
+@override final  List<SurahBlock> surahs;
 /// The Juz (part) number for this page (1-30).
 ///
 /// Determined by the first Ayah on the page. Note that Juz boundaries
@@ -314,12 +287,12 @@ _$QuranPageCopyWith<_QuranPage> get copyWith => __$QuranPageCopyWithImpl<_QuranP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuranPage&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other._lines, _lines)&&const DeepCollectionEquality().equals(other._surahs, _surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuranPage&&(identical(other.pageNumber, pageNumber) || other.pageNumber == pageNumber)&&(identical(other.glyphText, glyphText) || other.glyphText == glyphText)&&const DeepCollectionEquality().equals(other.lines, lines)&&const DeepCollectionEquality().equals(other.surahs, surahs)&&(identical(other.juzNumber, juzNumber) || other.juzNumber == juzNumber));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageNumber,glyphText,const DeepCollectionEquality().hash(_lines),const DeepCollectionEquality().hash(_surahs),juzNumber);
+int get hashCode => Object.hash(runtimeType,pageNumber,glyphText,const DeepCollectionEquality().hash(lines),const DeepCollectionEquality().hash(surahs),juzNumber);
 
 @override
 String toString() {
@@ -355,8 +328,8 @@ class __$QuranPageCopyWithImpl<$Res>
   return _then(_QuranPage(
 pageNumber: null == pageNumber ? _self.pageNumber : pageNumber // ignore: cast_nullable_to_non_nullable
 as int,glyphText: null == glyphText ? _self.glyphText : glyphText // ignore: cast_nullable_to_non_nullable
-as String,lines: null == lines ? _self._lines : lines // ignore: cast_nullable_to_non_nullable
-as List<PageLine>,surahs: null == surahs ? _self._surahs : surahs // ignore: cast_nullable_to_non_nullable
+as String,lines: null == lines ? _self.lines : lines // ignore: cast_nullable_to_non_nullable
+as List<PageLine>,surahs: null == surahs ? _self.surahs : surahs // ignore: cast_nullable_to_non_nullable
 as List<SurahBlock>,juzNumber: null == juzNumber ? _self.juzNumber : juzNumber // ignore: cast_nullable_to_non_nullable
 as int,
   ));
