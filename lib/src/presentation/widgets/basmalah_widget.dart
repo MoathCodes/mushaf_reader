@@ -45,7 +45,7 @@ import 'package:mushaf_reader/src/data/repository/i_quran_repo.dart';
 class BasmalahWidget extends StatefulWidget {
   /// The font size for the Basmalah text.
   ///
-  /// If not provided, uses the base Basmalah font size (21).
+  /// If not provided, uses the base Basmalah font size (18).
   final double? fontSize;
 
   /// Custom text style for the Basmalah.

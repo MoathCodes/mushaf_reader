@@ -10,6 +10,9 @@
 * Page layout: contain-fit by default (full page, no scroll); optional
   `readingBoost` lerps only up to width-fit (vertical scroll OK, never
   horizontal). Uniform page scale only — no per-line `FittedBox` stretching.
+* Reduced and page-scaled surah/juz labels, centered the surah ornament at 80%
+  page width, and reduced basmalah sizing so opening pages preserve more space
+  for ayah text at fit-page zoom.
 * Desktop zoom on `MushafReader`: Ctrl/⌘+scroll, trackpad pinch, and
   Ctrl/⌘+±/0 adjust session `readingBoost` via
   `MushafReaderController.sessionReadingBoost` / `nudgeReadingBoost` /
@@ -109,4 +112,3 @@
 ## 0.0.1
 
 * Initial release.
-
