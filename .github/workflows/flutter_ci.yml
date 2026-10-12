@@ -22,16 +22,17 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
+    - name: Install example dependencies and generate localizations
+      run: |
+        cd example
+        flutter pub get
+        dart run slang
+
     - name: Analyze
       run: flutter analyze --no-fatal-infos
 
     - name: Run tests
-      run: flutter test
-
-    - name: Install example dependencies
-      run: |
-        cd example
-        flutter pub get
+      run: flutter test --concurrency=1
 
     - name: Analyze example
       run: |
